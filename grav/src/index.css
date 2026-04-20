@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-sidebar: #1A1A2E;
+  --color-brand-sidebar-hover: color-mix(in srgb, #2D5A27 20%, transparent);
+  --color-brand-content: #F4F6F9;
+  --color-brand-card: #FFFFFF;
+  --color-brand-primary: #2D5A27;
+
+  /* Status/Feedback Colors */
+  --color-brand-warning: #F39C12;
+  --color-brand-danger: #E74C3C;
+  --color-brand-success: #27AE60;
+  --color-brand-info: #3498DB;
+
+  /* Text & Border Colors */
+  --color-brand-text-primary: #222222;
+  --color-brand-text-muted: #888888;
+  --color-brand-border: #E0E0E0;
+
+  /* Font */
+  --font-cairo: "Cairo", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-brand-content);
+    color: var(--color-brand-text-primary);
+    font-family: var(--font-cairo);
+    direction: rtl;
+    margin: 0;
+    padding: 0;
+  }
+}
