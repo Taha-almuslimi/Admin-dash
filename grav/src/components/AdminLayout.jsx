@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { 
-  Home, Users, Truck, ShoppingCart, AlertTriangle, 
-  DollarSign, Flag, BarChart2, Star, Clock, Settings, LogOut, Search, Bell, Menu, X, ChevronDown 
+import {
+  Home, Users, Truck, ShoppingCart, AlertTriangle,
+  DollarSign, Flag, BarChart2, Star, Clock, Settings, LogOut, Search, Bell, Menu, X, ChevronDown
 } from 'lucide-react';
 
 const navItems = [
@@ -25,10 +25,10 @@ export default function AdminLayout() {
   const currentTitle = navItems.find(item => item.path === location.pathname)?.label || 'الرئيسية';
 
   return (
-    <div className="flex h-screen overflow-hidden bg-brand-content font-cairo text-brand-text-primary dir-rtl">
+    <div className="flex h-screen overflow-hidden bg-brand-content font-cairo text-brand-text-primary" dir="rtl">
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
@@ -49,7 +49,7 @@ export default function AdminLayout() {
             <X size={24} />
           </button>
         </div>
-        
+
         <nav className="flex-1 overflow-y-auto py-4">
           <ul className="space-y-1">
             {navItems.map((item) => {
@@ -60,10 +60,9 @@ export default function AdminLayout() {
                     to={item.path}
                     onClick={() => setIsSidebarOpen(false)}
                     className={({ isActive }) =>
-                      `flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg transition-colors relative ${
-                        isActive 
-                          ? 'bg-brand-primary text-white' 
-                          : 'text-gray-300 hover:bg-brand-sidebar-hover hover:text-white'
+                      `flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg transition-colors relative ${isActive
+                        ? 'bg-brand-primary text-white'
+                        : 'text-gray-300 hover:bg-brand-sidebar-hover hover:text-white'
                       }`
                     }
                   >
@@ -94,7 +93,7 @@ export default function AdminLayout() {
         {/* Header */}
         <header className="h-16 bg-white border-b border-brand-border flex items-center justify-between px-4 lg:px-6 z-10 w-full">
           <div className="flex items-center space-x-4 space-x-reverse">
-            <button 
+            <button
               className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
               onClick={() => setIsSidebarOpen(true)}
             >
@@ -102,37 +101,37 @@ export default function AdminLayout() {
             </button>
             <h2 className="text-xl lg:text-2xl font-bold text-brand-text-primary hidden sm:block">{currentTitle}</h2>
           </div>
-          
+
           <div className="flex items-center space-x-4 lg:space-x-6 space-x-reverse">
             <div className="relative hidden md:block">
-              <input 
-                type="text" 
-                placeholder="بحث..." 
+              <input
+                type="text"
+                placeholder="بحث..."
                 className="pl-4 pr-10 py-2 rounded-lg border border-brand-border focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary w-48 lg:w-64 bg-brand-content"
               />
               <Search className="absolute right-3 top-2.5 text-brand-text-muted" size={20} />
             </div>
-            
+
             <button className="relative p-2 text-brand-text-primary hover:bg-brand-content rounded-full transition-colors">
               <Bell size={24} />
               <span className="absolute top-1 right-1 w-4 h-4 bg-brand-danger text-white text-[10px] flex items-center justify-center font-bold rounded-full border-2 border-white">3</span>
             </button>
-            
+
             <div className="flex items-center space-x-3 space-x-reverse cursor-pointer border-r border-brand-border pr-4 lg:pr-6">
-              <img 
-                src="https://ui-avatars.com/api/?name=Admin+User&background=2D5A27&color=fff" 
-                alt="Admin" 
+              <img
+                src="https://ui-avatars.com/api/?name=Admin+User&background=2D5A27&color=fff"
+                alt="Admin"
                 className="w-10 h-10 rounded-full border-2 border-brand-primary/20"
               />
               <div className="hidden sm:block">
-                <p className="text-sm font-bold text-brand-text-primary flex items-center gap-1">أحمد علي <ChevronDown size={14} className="text-brand-text-muted"/></p>
+                <p className="text-sm font-bold text-brand-text-primary flex items-center gap-1">أحمد علي <ChevronDown size={14} className="text-brand-text-muted" /></p>
               </div>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-y-auto p-6 scroll-smooth">
+        <div className="flex-1 overflow-y-auto p-6 scroll-smooth min-w-0">
           <Outlet />
         </div>
       </main>
