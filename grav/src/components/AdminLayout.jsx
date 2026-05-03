@@ -60,7 +60,7 @@ export default function AdminLayout() {
                     to={item.path}
                     onClick={() => setIsSidebarOpen(false)}
                     className={({ isActive }) =>
-                      `flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg transition-colors relative ${isActive
+                      `flex items-center space-x-3 space-x-reverse px-4 py-2.5 rounded-lg transition-colors relative ${isActive
                         ? 'bg-brand-primary text-white'
                         : 'text-gray-300 hover:bg-brand-sidebar-hover hover:text-white'
                       }`

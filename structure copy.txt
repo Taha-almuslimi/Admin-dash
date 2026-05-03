@@ -1,0 +1,92 @@
+
+1- header
+2- Sidebar 
+3- Pagination
+
+--home
+1- KPI Cards 4
+2- KPI Cards 3
+3- Charts 
+    Donut Chart      
+    Line Chart
+4- Tables
+    - Disputes table
+        6 cols
+    - Complaints table 
+        5 cols
+
+-- Users
+1- Filter Bar
+2- Users Table
+    8 cols
+
+
+-- Equipments
+1- Filter Bar
+2- Equipments Table
+    -Grid Mode
+        3 Cards
+    -List Mode
+        6 cols
+
+-- Rentals
+1- Status Tabs 7 
+2- Filter Bar
+3- Rental Opreations Table
+    8 cols
+
+
+-- Disputes
+1- Summary Cards 3
+2- Disputes Table
+    8 cols
+
+-- Finance
+1- Summary Cards  4
+2- Tabs 4
+    - Tab 1 — جميع المدفوعات
+        1- Filter Bar
+        2- Data Table
+            8 cols
+    - Tab 2 — حسابات Escrow
+        1-Header 
+        2- data table
+            5 cols
+    - Tab 3 — الأرباح المحوّلة
+        1- Data Table
+            4 cols
+    - Tab 4 — استردادات التأمين
+         1- Data Table
+            5 cols
+
+-- Analysis
+1- Header
+2- Row 1
+    1-BarChart
+    2-AreaChart
+3- Row 2
+    1- Grouped Bar
+    2- Horizontal Bar
+    3- Gauge (PieChart)
+4-  KPIs Table
+    5 cols
+
+-- Reviews
+1- Filter Bar
+2- Reviews table
+    8 cols
+
+
+-- AuditLogs
+1- Header
+2- Filter Bar
+3- AuditLogs table
+    6 cols
+
+-- Settings
+1- Tab Bar
+2- Roles table
+    4 cols
+3- Roles Matrix
+    5*3 
+

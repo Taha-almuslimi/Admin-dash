@@ -1,0 +1,402 @@
+=====================================
+  Admin Dashboard — UI Structure
+=====================================
+
+
+Page: Overview (الرئيسية)
+
+- Sidebar
+- Header
+- Main
+
+  - KPI Row 1
+
+    - Card (عمليات التأجير)
+    - Card (الأرباح)
+    - Card (النزاعات)
+    - Card (المستخدمون)
+
+  - KPI Row 2
+
+    - Card (معدل الإلغاء + Sparkline)
+    - Card (معدل النزاعات)
+    - Card (Escrow المحتجز)
+
+  - Charts
+  
+    - LineChart (عمليات التأجير — آخر 30 يوماً)
+
+      - FilterTabs (أسبوع / شهر / 3 أشهر / سنة)
+
+    - DonutChart (توزيع حالات الطلبات)
+
+  - Tables
+
+    - DisputesTable (آخر النزاعات)
+    - ComplaintsTable (آخر البلاغات)
+
+
+---
+
+
+Page: Users (المستخدمون)
+
+- Sidebar
+- Header
+- Main
+
+  - FilterBar
+
+    - SearchInput
+    - Select (النوع)
+    - Select (الحالة)
+    - Select (المحافظة)
+    - ExportButton (تصدير CSV)
+
+  - Table
+
+    - Columns: المستخدم / الجوال / النوع / المحافظة / التقييم / العمليات / الحالة / الإجراءات
+    - ActionButtons (عرض / تحذير / تعليق / حظر)
+
+  - Pagination
+
+  - Drawer (تفاصيل المستخدم)
+
+    - ProfileHeader (صورة / اسم / نوع / موقع / تقييم)
+    - ContactInfo (جوال / بريد / تاريخ التسجيل / حالة KYC)
+    - RecentRentals (آخر 5 عمليات)
+    - AdminActionsLog
+    - ActionButtons (تحذير / تعليق / حظر)
+
+  - Modal (إجراء إداري)
+
+    - UserInfo
+    - RadioGroup (تحذير / تعليق مؤقت / حظر دائم)
+    - Textarea (السبب)
+    - Select (ربط بسياسة)
+    - Buttons (إلغاء / تأكيد الإجراء)
+
+
+---
+
+
+Page: Equipment (المعدات)
+
+- Sidebar
+- Header
+- Main
+
+  - FilterBar
+
+    - SearchInput
+    - Select (الفئة)
+    - Select (الحالة)
+    - Select (المحافظة)
+    - ViewToggle (Grid / List)
+
+  - GridView
+
+    - EquipmentCard
+
+      - Image (+ StatusBadge + PriceTag)
+      - Name
+      - Location
+      - Category
+      - OwnerInfo
+      - RentCount
+      - ActionButtons (عرض / تعديل / حذف)
+
+  - ListView (Table)
+
+    - Columns: المعدة / الموقع والتصنيف / المؤجر / السعر / الحالة / الإجراءات
+
+  - Drawer (تفاصيل المعدة)
+
+    - ImageCarousel (+ StatusBadge + Dots)
+    - Name
+    - Description
+    - PriceInfo (سعر الإيجار / مبلغ التأمين)
+    - Details (الفئة / المحافظة / المؤجر / مرات الإيجار)
+    - ActionButtons (إخفاء / تعديل / حذف)
+
+
+---
+
+
+Page: Rentals (عمليات التأجير)
+
+- Sidebar
+- Header
+- Main
+
+  - StatusTabs (الكل / Pending / Confirmed / In Use / Completed / Cancelled / Disputed)
+
+  - FilterBar
+
+    - SearchInput
+    - Select (المحافظة)
+    - DateRangePicker
+
+  - Table
+
+    - Columns: ID / المستأجر / المؤجر / المعدة / المدة / الإجمالي / الحالة / العقد
+
+  - Drawer (تفاصيل العملية)
+
+    - Header (ID + StatusBadge)
+    - LinkedProfiles (المستأجر / المؤجر / المعدة)
+    - FinancialInfo
+
+      - RentalPeriod
+      - Duration
+      - TotalAmount
+      - InsuranceAmount
+      - EscrowAmount
+
+    - Documents
+
+      - ContractButton
+      - DeliveryPhotos
+      - ReturnPhotos
+
+    - Timeline (سجل الحالات)
+
+
+---
+
+
+Page: Disputes (النزاعات)
+
+- Sidebar
+- Header
+- Main
+
+  - SummaryCards
+
+    - Card (نزاعات مفتوحة)
+    - Card (قيد المراجعة)
+    - Card (نزاعات محلولة)
+
+  - Table (قائمة النزاعات)
+
+    - FilterBar (Select الحالة)
+    - Columns: ID / المستأجر / المؤجر / المعدة / مبلغ النزاع / تاريخ الفتح / الحالة / إجراء
+
+  - ReviewPage (مراجعة النزاع)
+
+    - Header (عنوان + ID + StatusBadge + BackButton)
+
+    - Column1: بيانات الطرفين
+
+      - TenantCard (اسم / تقييم / جوال / اعتراض)
+      - OwnerCard (اسم / تقييم / جوال / ملاحظات / الخصم المطلوب)
+
+    - Column2: الأدلة والصور
+
+      - DeliveryPhotos
+      - ReturnPhotos
+      - ContractButton
+
+    - Column3: اتخاذ القرار
+
+      - DisputeAmount
+      - RadioGroup (قبول الخصم / رفض الخصم / تعديل القيمة)
+      - AdjustedAmountInput
+      - Textarea (ملاحظة إدارية)
+      - WarningAlert
+      - Buttons (إلغاء / تأكيد القرار)
+
+
+---
+
+
+Page: Finance (الإشراف المالي)
+
+- Sidebar
+- Header
+- Main
+
+  - SummaryCards
+
+    - Card (إجمالي المدفوعات)
+    - Card (Escrow المحتجز)
+    - Card (استردادات التأمين)
+    - Card (الأرباح المحوّلة)
+
+  - Tabs (جميع المدفوعات / حسابات Escrow / الأرباح المحوّلة / استردادات التأمين)
+
+  - Tab: جميع المدفوعات
+
+    - FilterBar (SearchInput / DatePicker / Select الحالة)
+    - Table (# / المستأجر / المعدة / مبلغ الإيجار / مبلغ التأمين / تاريخ الدفع / الحالة / إجراء)
+
+  - Tab: حسابات Escrow
+
+    - SummaryHeader (إجمالي المحتجز / عدد العمليات)
+    - Table (عملية / مبلغ محتجز / منذ / الحالة / إجراء)
+
+  - Tab: الأرباح المحوّلة
+
+    - Table (المؤجر / عدد العمليات / إجمالي الأرباح / حالة التحويل)
+
+  - Tab: استردادات التأمين
+
+    - Table (المستأجر / مبلغ التأمين الأصلي / المبلغ المُسترَد / تاريخ الاسترداد / الحالة)
+
+
+---
+
+
+Page: Complaints (البلاغات)
+
+- Sidebar
+- Header
+- Main
+
+  - SummaryCards
+
+    - Card (بلاغات جديدة)
+    - Card (نشاط مشبوه)
+    - Card (تمت المعالجة)
+
+  - Tabs (قائمة البلاغات / مركز الإشعارات)
+
+  - Tab: قائمة البلاغات
+
+    - FilterBar (SearchInput / Select الأولوية)
+    - Table (# / المُبلِّغ / نوع البلاغ / الهدف / التاريخ / أولوية / الحالة / إجراء)
+
+  - Tab: مركز الإشعارات
+
+    - NotificationCard (نزاع جديد)
+    - NotificationCard (نشاط مشبوه)
+    - NotificationCard (بلاغ جديد)
+    - NotificationCard (عملية مكتملة)
+
+  - Modal (معالجة البلاغ)
+
+    - Header (عنوان + ID)
+    - ComplaintDetails (المُبلِّغ / نوع البلاغ / الهدف / التفاصيل)
+    - ActionGrid (تحذير / تعليق مؤقت / حظر نهائي / رفض البلاغ)
+    - Textarea (ملاحظة إدارية)
+    - Buttons (الإبلاغ للجهات / إلغاء / حفظ الإجراء)
+
+
+---
+
+
+Page: Analytics (التقارير)
+
+- Sidebar
+- Header
+- Main
+
+  - FilterBar
+
+    - DateRangeSelect (أسبوع / شهر / سنة / مخصص)
+    - CustomDateInputs
+    - ExportDropdown (PDF / CSV)
+
+  - Charts Row 1
+
+    - BarChart (عمليات التأجير حسب المحافظة)
+    - AreaChart (الأرباح الإجمالية بالزمن)
+
+  - Charts Row 2
+
+    - BarChart (معدل الإلغاء vs الإكمال)
+    - HorizontalBarChart (أفضل المؤجرين أداءً)
+    - GaugeChart (معدل النزاعات الإجمالي)
+
+  - KPIs Table
+
+    - Columns: المؤشر / القيمة الحالية / الهدف / الفارق / التقييم
+
+
+---
+
+
+Page: Reviews (التقييمات)
+
+- Sidebar
+- Header
+- Main
+
+  - FilterBar
+
+    - SearchInput
+    - Select (النوع)
+    - Select (التقييم)
+    - Select (الحالة)
+
+  - Table
+
+    - Columns: # / المُقيِّم / الهدف / التقييم (Stars) / نص المراجعة / التاريخ / الحالة / إجراءات
+    - ActionButtons (عرض / حذف / إبلاغ)
+
+  - Drawer (تفاصيل التقييم)
+
+    - RaterToTarget (المُقيِّم → الهدف)
+    - StarsRating
+    - ReviewText
+    - LinkedOperation (العملية المرتبطة)
+    - ActionButtons (إبقاء / حذف / إبلاغ)
+
+
+---
+
+
+Page: AuditLog (سجل العمليات)
+
+- Sidebar
+- Header
+- Main
+
+  - WarningBanner (🔒 السجل للقراءة فقط)
+
+  - FilterBar
+
+    - SearchInput
+    - Select (المسؤول)
+    - Select (نوع الحدث)
+    - DateRangePicker
+    - ExportButton (تصدير السجل)
+
+  - Table
+
+    - Columns: الوقت / المسؤول / الدور / الحدث / التفاصيل / الـ IP
+
+
+---
+
+
+Page: Settings (الإعدادات)
+
+- Sidebar
+- Header
+- Main
+
+  - Tabs (إدارة الأدوار والصلاحيات / الأمان والمصادقة)
+
+  - Tab: إدارة الأدوار والصلاحيات
+
+    - AdminsTable
+
+      - Header (عنوان + AddButton)
+      - Columns: الاسم / البريد الإلكتروني / الدور (Select) / إجراء (تعديل / حذف)
+
+    - PermissionsMatrix
+
+      - Columns: الصلاحية / Super Admin / Support / Finance
+      - Rows: إدارة المستخدمين / الإشراف المالي / إدارة النزاعات / Audit Log / إدارة المعدات
+
+  - Tab: الأمان والمصادقة
+
+    - SecuritySettings
+
+      - Toggle (المصادقة متعددة العوامل 2FA)
+      - Select (مدة انتهاء الجلسة)
+
+    - ActiveSessions
+
+      - SessionCard (الجهاز / IP / الحالة / إنهاء الجلسة)
