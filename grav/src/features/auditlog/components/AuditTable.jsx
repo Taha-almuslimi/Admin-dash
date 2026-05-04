@@ -1,7 +1,15 @@
+import { useState } from 'react';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
+import Pagination from '../../../components/ui/Pagination';
 
 export default function AuditTable({ auditData }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil((auditData?.length || 0) / itemsPerPage);
+  const currentData = auditData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
   const columns = [
     { key: 'time', label: 'الوقت' },
     { key: 'admin', label: 'المسؤول' },
@@ -15,7 +23,7 @@ export default function AuditTable({ auditData }) {
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
       <Table
         columns={columns}
-        data={auditData}
+        data={currentData}
         renderRow={(log) => (
           <tr key={log.id} className="hover:bg-brand-content/50 transition-colors">
                 <td className="px-6 py-4 font-bold text-brand-text-muted" dir="ltr">{log.time}</td>
@@ -42,6 +50,16 @@ export default function AuditTable({ auditData }) {
               </tr>
         )}
       />
+      {totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
+          <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, auditData?.length || 0)} من {auditData?.length || 0} سجل</span>
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
     </div>
   );
 }

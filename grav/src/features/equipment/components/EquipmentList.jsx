@@ -1,9 +1,17 @@
+import { useState } from 'react';
 import { Eye, Edit, Trash2 } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
+import Pagination from '../../../components/ui/Pagination';
 
 export default function EquipmentList({ equipment, onOpenDrawer }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil((equipment?.length || 0) / itemsPerPage);
+  const currentData = equipment?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
   const columns = [
     { key: 'equipment', label: 'المعدة' },
     { key: 'meta', label: 'الموقع والتصنيف' },
@@ -17,7 +25,7 @@ export default function EquipmentList({ equipment, onOpenDrawer }) {
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
       <Table
         columns={columns}
-        data={equipment}
+        data={currentData}
         renderRow={(item) => (
           <tr key={item.id} className="hover:bg-brand-content/50 transition-colors">
               <td className="px-6 py-4">
@@ -56,6 +64,16 @@ export default function EquipmentList({ equipment, onOpenDrawer }) {
         )}
         wrapperClassName=""
       />
+      {totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
+          <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, equipment?.length || 0)} من {equipment?.length || 0} معدة</span>
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
     </div>
   );
 }

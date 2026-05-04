@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { Edit, Trash2, Plus } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
+import Modal from '../../../components/ui/Modal';
 
 export default function AdminsTable({ admins }) {
+  const [isAddAdminOpen, setIsAddAdminOpen] = useState(false);
+
   const columns = [
     { key: 'name', label: 'الاسم' },
     { key: 'email', label: 'البريد الإلكتروني' },
@@ -15,7 +19,11 @@ export default function AdminsTable({ admins }) {
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
       <div className="p-4 border-b border-brand-border bg-brand-content/50 flex justify-between items-center">
         <h3 className="text-lg font-bold text-brand-text-primary">المسؤولون</h3>
-        <Button unstyled className="flex items-center space-x-1 space-x-reverse bg-brand-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-brand-primary/90 transition-colors shadow-sm">
+        <Button 
+          unstyled 
+          className="flex items-center space-x-1 space-x-reverse bg-brand-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-brand-primary/90 transition-colors shadow-sm"
+          onClick={() => setIsAddAdminOpen(true)}
+        >
           <Plus size={16} /> <span>إضافة مسؤول جديد</span>
         </Button>
       </div>
@@ -46,6 +54,57 @@ export default function AdminsTable({ admins }) {
               </tr>
         )}
       />
+
+      <Modal
+        isOpen={isAddAdminOpen}
+        onClose={() => setIsAddAdminOpen(false)}
+        title="إضافة مسؤول جديد"
+        footer={
+          <div className="p-6 border-t border-brand-border bg-brand-content flex justify-end gap-3 rounded-b-xl">
+            <Button variant="outline" onClick={() => setIsAddAdminOpen(false)}>إلغاء</Button>
+            <Button className="bg-brand-primary hover:bg-brand-primary/90" onClick={() => setIsAddAdminOpen(false)}>حفظ وإضافة</Button>
+          </div>
+        }
+      >
+        <div className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-bold text-brand-text-primary mb-2">اسم المسؤول</label>
+            <input 
+              type="text" 
+              className="w-full p-3 border border-brand-border rounded-lg bg-brand-content focus:outline-none focus:border-brand-primary"
+              placeholder="الاسم الكامل"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-brand-text-primary mb-2">البريد الإلكتروني</label>
+            <input 
+              type="email" 
+              className="w-full p-3 border border-brand-border rounded-lg bg-brand-content focus:outline-none focus:border-brand-primary"
+              placeholder="example@admin.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-brand-text-primary mb-2">الدور</label>
+            <Select 
+              options={[
+                { value: 'Super Admin', label: 'Super Admin' }, 
+                { value: 'Support', label: 'Support' }, 
+                { value: 'Finance', label: 'Finance' }
+              ]} 
+              className="w-full border border-brand-border rounded-lg px-4 py-3 bg-brand-content focus:outline-none focus:border-brand-primary"
+              placeholder="اختر الدور"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-brand-text-primary mb-2">كلمة المرور المؤقتة</label>
+            <input 
+              type="password" 
+              className="w-full p-3 border border-brand-border rounded-lg bg-brand-content focus:outline-none focus:border-brand-primary"
+              placeholder="********"
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

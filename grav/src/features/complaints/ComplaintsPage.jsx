@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import SummaryCards from './components/SummaryCards';
 import ComplaintsTable from './components/ComplaintsTable';
 import NotificationsTab from './components/NotificationsTab';
@@ -11,6 +12,15 @@ export default function ComplaintsPage() {
   const [activeTab, setActiveTab] = useState('complaints');
   const [actionType, setActionType] = useState('warn');
   const modal = useModal();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.openActionModal) {
+      modal.open();
+      // Optionally remove the state so it doesn't reopen on reload
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, modal]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">

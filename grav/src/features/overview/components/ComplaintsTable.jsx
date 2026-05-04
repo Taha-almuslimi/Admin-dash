@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 
 export default function ComplaintsTable() {
+  const navigate = useNavigate();
   const rows = [1, 2, 3];
   const columns = [
     { key: 'id', label: '#', className: 'py-3 px-4 rounded-r-lg' },
@@ -16,7 +18,12 @@ export default function ComplaintsTable() {
     <div className="bg-brand-card rounded-xl p-6 border border-brand-border shadow-sm">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-bold text-brand-text-primary">آخر البلاغات</h3>
-        <button className="text-brand-info text-sm font-medium hover:underline">عرض الكل</button>
+        <button 
+          className="text-brand-info text-sm font-medium hover:underline"
+          onClick={() => navigate('/complaints')}
+        >
+          عرض الكل
+        </button>
       </div>
       <Table
         columns={columns}
@@ -31,7 +38,11 @@ export default function ComplaintsTable() {
                 </td>
                 <td className="py-3 px-4 text-brand-text-muted">منذ ساعتين</td>
                 <td className="py-3 px-4 text-center">
-                  <Button unstyled className="border border-brand-primary text-brand-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-primary/10 transition-colors inline-flex items-center">
+                  <Button 
+                    unstyled 
+                    className="border border-brand-primary text-brand-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-primary/10 transition-colors inline-flex items-center"
+                    onClick={() => navigate('/complaints', { state: { openActionModal: true } })}
+                  >
                     معالجة
                   </Button>
                 </td>

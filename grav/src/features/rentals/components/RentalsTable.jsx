@@ -1,9 +1,17 @@
+import { useState } from 'react';
 import { FileText } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
+import Pagination from '../../../components/ui/Pagination';
 
 export default function RentalsTable({ rentals, onOpenDrawer }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  
+  const totalPages = Math.ceil((rentals?.length || 0) / itemsPerPage);
+  const currentData = rentals?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
   const columns = [
     { key: 'id', label: 'ID' },
     { key: 'tenant', label: 'المستأجر' },
@@ -19,7 +27,7 @@ export default function RentalsTable({ rentals, onOpenDrawer }) {
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
       <Table
         columns={columns}
-        data={rentals}
+        data={currentData}
         renderRow={(rental) => (
           <tr key={rental.id} className="hover:bg-brand-content/50 transition-colors cursor-pointer" onClick={() => onOpenDrawer(rental)}>
                 <td className="px-6 py-4 font-bold text-brand-text-primary" dir="ltr">{rental.id}</td>
@@ -44,6 +52,15 @@ export default function RentalsTable({ rentals, onOpenDrawer }) {
               </tr>
         )}
       />
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
     </div>
   );
 }

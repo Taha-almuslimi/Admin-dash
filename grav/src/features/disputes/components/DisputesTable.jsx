@@ -1,9 +1,17 @@
+import { useState } from 'react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
+import Pagination from '../../../components/ui/Pagination';
 
 export default function DisputesTable({ disputes, onOpenReview }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil((disputes?.length || 0) / itemsPerPage);
+  const currentData = disputes?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
   const columns = [
     { key: 'id', label: 'ID' },
     { key: 'tenant', label: 'المستأجر' },
@@ -25,7 +33,7 @@ export default function DisputesTable({ disputes, onOpenReview }) {
       </div>
       <Table
         columns={columns}
-        data={disputes}
+        data={currentData}
         renderRow={(dispute) => (
           <tr key={dispute.id} className="hover:bg-brand-content/50 transition-colors">
                 <td className="px-6 py-4 font-bold text-brand-text-primary" dir="ltr">{dispute.id}</td>
@@ -51,6 +59,15 @@ export default function DisputesTable({ disputes, onOpenReview }) {
               </tr>
         )}
       />
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Star, Eye, Trash2, Flag } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
+import Pagination from '../../../components/ui/Pagination';
 
 const renderStars = (rating) => {
   return Array(5).fill(0).map((_, i) => (
@@ -10,6 +12,12 @@ const renderStars = (rating) => {
 };
 
 export default function ReviewsTable({ reviews, onOpenDrawer }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil((reviews?.length || 0) / itemsPerPage);
+  const currentData = reviews?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
   const columns = [
     { key: 'id', label: '#' },
     { key: 'rater', label: 'المُقيِّم' },
@@ -25,7 +33,7 @@ export default function ReviewsTable({ reviews, onOpenDrawer }) {
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
       <Table
         columns={columns}
-        data={reviews}
+        data={currentData}
         renderRow={(rev) => (
           <tr key={rev.id} className="hover:bg-brand-content/50 transition-colors">
                 <td className="px-6 py-4 font-bold text-brand-text-muted" dir="ltr">{rev.id}</td>
@@ -71,6 +79,15 @@ export default function ReviewsTable({ reviews, onOpenDrawer }) {
               </tr>
         )}
       />
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -1,12 +1,20 @@
+import { useState } from 'react';
 import { MessageSquare } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import SearchInput from '../../../components/ui/SearchInput';
 import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
+import Pagination from '../../../components/ui/Pagination';
 
 export default function ComplaintsTable({ onOpenModal }) {
-  const rows = [1, 2, 3, 4];
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const allRows = [1, 2, 3, 4, 5, 6, 7]; // Example rows
+  const totalPages = Math.ceil(allRows.length / itemsPerPage);
+  const currentRows = allRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const columns = [
     { key: 'id', label: '#' },
     { key: 'reporter', label: 'المُبلِّغ' },
@@ -27,7 +35,7 @@ export default function ComplaintsTable({ onOpenModal }) {
       
       <Table
         columns={columns}
-        data={rows}
+        data={currentRows}
         renderRow={(i) => (
           <tr key={i} className="hover:bg-brand-content/50 transition-colors">
                 <td className="px-6 py-4 font-bold text-brand-text-muted" dir="ltr">RPT-00{i}</td>
@@ -51,6 +59,15 @@ export default function ComplaintsTable({ onOpenModal }) {
               </tr>
         )}
       />
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
     </div>
   );
 }

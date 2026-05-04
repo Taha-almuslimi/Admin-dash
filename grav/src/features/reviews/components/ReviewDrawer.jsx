@@ -1,4 +1,5 @@
 import { Star, ChevronLeft, CheckCircle, Trash2, Flag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import Drawer from '../../../components/ui/Drawer';
 
@@ -9,6 +10,8 @@ const renderStars = (rating) => {
 };
 
 export default function ReviewDrawer({ isOpen, review, onClose }) {
+  const navigate = useNavigate();
+
   return (
     <Drawer
       isOpen={isOpen}
@@ -62,7 +65,13 @@ export default function ReviewDrawer({ isOpen, review, onClose }) {
 
               <div className="border border-brand-border rounded-xl overflow-hidden hover:border-brand-primary transition-colors">
                 <div className="bg-brand-content/50 px-4 py-2 border-b border-brand-border text-xs font-bold text-brand-text-muted">العملية المرتبطة</div>
-                <div className="p-4 bg-white flex justify-between items-center cursor-pointer group">
+                <div 
+                  className="p-4 bg-white flex justify-between items-center cursor-pointer group"
+                  onClick={() => {
+                    navigate('/rentals');
+                    onClose();
+                  }}
+                >
                   <div>
                     <p className="font-bold text-brand-text-primary group-hover:text-brand-primary transition-colors" dir="ltr">{review.opId}</p>
                     <p className="text-xs text-brand-text-muted mt-1">اضغط لعرض تفاصيل العملية</p>

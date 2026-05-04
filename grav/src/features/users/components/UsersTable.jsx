@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Eye, AlertTriangle, PauseCircle, Ban } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
@@ -5,6 +6,12 @@ import Pagination from '../../../components/ui/Pagination';
 import Table from '../../../components/ui/Table';
 
 export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const totalPages = Math.ceil((users?.length || 0) / itemsPerPage);
+  const currentData = users?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
   const columns = [
     { key: 'user', label: 'المستخدم' },
     { key: 'phone', label: 'الجوال' },
@@ -20,7 +27,7 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
       <Table
         columns={columns}
-        data={users}
+        data={currentData}
         renderRow={(user) => (
           <tr key={user.id} className="hover:bg-brand-content/50 transition-colors cursor-pointer" onClick={() => onOpenDrawer(user)}>
                 <td className="px-6 py-4">
@@ -64,10 +71,16 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
               </tr>
         )}
       />
-      <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
-        <span>عرض 1 إلى 4 من 3,580 مستخدم</span>
-        <Pagination currentPage={1} totalPages={2} onPageChange={() => {}} />
-      </div>
+      {totalPages > 1 && (
+        <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
+          <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, users?.length || 0)} من {users?.length || 0} مستخدم</span>
+          <Pagination 
+            currentPage={currentPage} 
+            totalPages={totalPages} 
+            onPageChange={setCurrentPage} 
+          />
+        </div>
+      )}
     </div>
   );
 }
