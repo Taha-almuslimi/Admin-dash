@@ -1,19 +1,28 @@
-import { NavLink } from 'react-router-dom';
-import { LogOut, X } from 'lucide-react';
+import { NavLink } from "react-router-dom";
+import { LogOut, X } from "lucide-react";
 
 export default function Sidebar({ isSidebarOpen, onClose, navItems }) {
   return (
-    <aside className={`
+    <aside
+      className={`
       fixed lg:static inset-y-0 right-0 z-50
       w-64 bg-brand-sidebar text-white flex flex-col transition-transform duration-300 ease-in-out
-      ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
-    `}>
+      ${isSidebarOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"}
+    `}
+    >
       <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800">
         <div className="flex flex-col">
-          <h1 className="text-xl font-bold text-white tracking-wide">Admin Panel</h1>
-          <span className="text-xs text-brand-success mt-1 px-2 py-0.5 bg-brand-success/10 rounded w-fit">Super Admin</span>
+          <h1 className="text-xl font-bold text-white tracking-wide">
+            Admin Panel
+          </h1>
+          <span className="text-xs text-brand-success mt-1 px-2 py-0.5 bg-brand-success/10 rounded w-fit">
+            Super Admin
+          </span>
         </div>
-        <button className="lg:hidden text-gray-400 hover:text-white" onClick={onClose}>
+        <button
+          className="lg:hidden text-gray-400 hover:text-white"
+          onClick={onClose}
+        >
           <X size={24} />
         </button>
       </div>
@@ -28,15 +37,18 @@ export default function Sidebar({ isSidebarOpen, onClose, navItems }) {
                   to={item.path}
                   onClick={onClose}
                   className={({ isActive }) =>
-                    `flex items-center space-x-3 space-x-reverse px-4 py-3 rounded-lg transition-colors relative ${isActive
-                      ? 'bg-brand-primary text-white'
-                      : 'text-gray-300 hover:bg-brand-sidebar-hover hover:text-white'
+                    `flex items-center space-x-3 space-x-reverse px-4 py-2.5 rounded-lg transition-colors relative ${
+                      isActive
+                        ? "bg-brand-primary text-white"
+                        : "text-gray-300 hover:bg-brand-sidebar-hover hover:text-white"
                     }`
                   }
                 >
                   {({ isActive }) => (
                     <>
-                      {isActive && <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white rounded-r-full" />}
+                      {isActive && (
+                        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white rounded-r-full" />
+                      )}
                       <Icon size={20} />
                       <span className="font-medium">{item.label}</span>
                     </>
