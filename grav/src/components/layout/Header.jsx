@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bell, ChevronDown, Menu, Search, LogOut, User, Settings } from 'lucide-react';
 
 export default function Header({ currentTitle, onOpenSidebar }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -39,7 +41,10 @@ export default function Header({ currentTitle, onOpenSidebar }) {
           <Search className="absolute right-3 top-2.5 text-brand-text-muted" size={20} />
         </div>
 
-        <button className="relative p-2 text-brand-text-primary hover:bg-brand-content rounded-full transition-colors">
+        <button 
+          className="relative p-2 text-brand-text-primary hover:bg-brand-content rounded-full transition-colors"
+          onClick={() => navigate('/complaints', { state: { activeTab: 'notifications' } })}
+        >
           <Bell size={24} />
           <span className="absolute top-1 right-1 w-4 h-4 bg-brand-danger text-white text-[10px] flex items-center justify-center font-bold rounded-full border-2 border-white">3</span>
         </button>
@@ -63,13 +68,13 @@ export default function Header({ currentTitle, onOpenSidebar }) {
             <div className="absolute left-0 mt-2 w-48 bg-white border border-brand-border rounded-lg shadow-lg z-50">
               <ul className="py-2">
                 <li>
-                  <button className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-text-primary">
+                  <button onClick={() => { setIsDropdownOpen(false); }} className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-text-primary">
                     <User size={16} />
                     <span>الملف الشخصي</span>
                   </button>
                 </li>
                 <li>
-                  <button className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-text-primary">
+                  <button onClick={() => { navigate('/settings'); setIsDropdownOpen(false); }} className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-text-primary">
                     <Settings size={16} />
                     <span>الإعدادات</span>
                   </button>
@@ -78,7 +83,7 @@ export default function Header({ currentTitle, onOpenSidebar }) {
                   <hr className="my-1 border-brand-border" />
                 </li>
                 <li>
-                  <button className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-danger">
+                  <button onClick={() => { setIsDropdownOpen(false); }} className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-danger">
                     <LogOut size={16} />
                     <span>تسجيل الخروج</span>
                   </button>

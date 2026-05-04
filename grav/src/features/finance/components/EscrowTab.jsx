@@ -1,10 +1,19 @@
+import { useState } from 'react';
 import { PauseCircle } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
+import Modal from '../../../components/ui/Modal';
+import Pagination from '../../../components/ui/Pagination';
 
 export default function EscrowTab() {
-  const rows = [1, 2, 3];
+  const [selectedOp, setSelectedOp] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const rows = [1, 2, 3, 4, 5, 6, 7];
+  const totalPages = Math.ceil(rows.length / itemsPerPage);
+  const currentRows = rows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const columns = [
     { key: 'op', label: 'عملية' },
     { key: 'amount', label: 'مبلغ محتجز' },
@@ -27,7 +36,7 @@ export default function EscrowTab() {
       </div>
       <Table
         columns={columns}
-        data={rows}
+        data={currentRows}
         renderRow={(i) => (
           <tr key={i} className="hover:bg-brand-content/50 transition-colors">
                 <td className="px-6 py-4 font-bold" dir="ltr">OP-2024-08{i}</td>
@@ -37,13 +46,59 @@ export default function EscrowTab() {
                   <Badge unstyled className="px-2.5 py-1 bg-brand-warning/10 text-brand-warning rounded-md text-xs font-bold">In Use</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <Button unstyled className="text-brand-danger border border-brand-danger hover:bg-brand-danger/10 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center">
+                  <Button 
+                    unstyled 
+                    className="text-brand-danger border border-brand-danger hover:bg-brand-danger/10 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center"
+                    onClick={() => setSelectedOp(`OP-2024-08${i}`)}
+                  >
                     <PauseCircle size={14} className="ml-1" /> تعليق الأموال
                   </Button>
                 </td>
               </tr>
         )}
       />
+
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </div>
+      )}
+
+      <Modal
+        isOpen={!!selectedOp}
+        onClose={() => setSelectedOp(null)}
+        title="تعليق الأموال المحتجزة"
+        footer={
+          <div className="p-6 border-t border-brand-border bg-brand-content flex justify-end gap-3 rounded-b-xl">
+            <Button variant="outline" onClick={() => setSelectedOp(null)}>إلغاء</Button>
+            <Button className="bg-brand-danger hover:bg-brand-danger/90" onClick={() => setSelectedOp(null)}>تأكيد التعليق</Button>
+          </div>
+        }
+      >
+        <div className="p-6 space-y-4">
+          <p className="text-brand-text-primary">
+            هل تريد تعليق الأموال المحتجزة للعملية <strong>{selectedOp}</strong>؟
+          </p>
+          <div className="bg-brand-content p-4 rounded-lg border border-brand-border space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-text-muted">المبلغ المحتجز:</span>
+              <span className="font-bold text-brand-warning">150,000 ر.ي</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-text-muted">تاريخ الاحتجاز:</span>
+              <span className="font-bold">12 مايو 2024</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-brand-text-primary mb-2">سبب التعليق</label>
+            <textarea 
+              className="w-full p-3 border border-brand-border rounded-lg bg-brand-content focus:outline-none focus:border-brand-primary"
+              rows={3}
+              placeholder="اكتب سبب تعليق الأموال..."
+            ></textarea>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

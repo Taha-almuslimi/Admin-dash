@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Eye, Edit, Trash2 } from 'lucide-react';
+import { Eye, Edit, EyeOff } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 
-export default function EquipmentList({ equipment, onOpenDrawer }) {
+export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -55,8 +55,8 @@ export default function EquipmentList({ equipment, onOpenDrawer }) {
                   <Button unstyled className="p-1.5 text-brand-primary hover:bg-brand-primary/10 rounded-lg transition-colors">
                     <Edit size={18} />
                   </Button>
-                  <Button unstyled className="p-1.5 text-brand-danger hover:bg-brand-danger/10 rounded-lg transition-colors">
-                    <Trash2 size={18} />
+                  <Button unstyled onClick={() => onHideItem?.(item)} className="p-1.5 text-brand-warning hover:bg-brand-warning/10 rounded-lg transition-colors" title="إخفاء">
+                    <EyeOff size={18} />
                   </Button>
                 </div>
               </td>

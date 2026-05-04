@@ -1,8 +1,20 @@
+import { useState } from 'react';
 import { Smartphone, Clock, Monitor, LogOut } from 'lucide-react';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
+import Modal from '../../../components/ui/Modal';
 
 export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
+  const [sessionToEnd, setSessionToEnd] = useState(null);
+  const [activeSessions, setActiveSessions] = useState(sessions);
+
+  const handleEndSession = () => {
+    if (sessionToEnd) {
+      setActiveSessions(prev => prev.filter(s => s.id !== sessionToEnd.id));
+      setSessionToEnd(null);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
@@ -49,11 +61,11 @@ export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
       <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
         <div className="p-4 border-b border-brand-border bg-brand-content/50">
           <h3 className="text-lg font-bold text-brand-text-primary flex items-center">
-            الجلسات النشطة <span className="mr-2 px-2 py-0.5 bg-brand-success/10 text-brand-success text-xs rounded-full">3 جلسات</span>
+            الجلسات النشطة <span className="mr-2 px-2 py-0.5 bg-brand-success/10 text-brand-success text-xs rounded-full">{activeSessions.length} جلسات</span>
           </h3>
         </div>
         <div className="p-6 space-y-4">
-          {sessions.map((session) => (
+          {activeSessions.map((session) => (
             <div key={session.id} className="flex items-center justify-between p-4 border border-brand-border rounded-xl hover:border-brand-primary transition-colors">
               <div className="flex items-start space-x-4 space-x-reverse">
                 <div className="w-10 h-10 bg-brand-content rounded-xl flex items-center justify-center shrink-0 text-brand-text-muted">
@@ -69,7 +81,11 @@ export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
                 </div>
               </div>
               {!session.current && (
-                <Button unstyled className="flex items-center space-x-1 space-x-reverse px-3 py-1.5 text-xs font-bold text-brand-danger bg-brand-danger/10 hover:bg-brand-danger hover:text-white rounded-lg transition-colors border border-brand-danger/20">
+                <Button 
+                  unstyled 
+                  className="flex items-center space-x-1 space-x-reverse px-3 py-1.5 text-xs font-bold text-brand-danger bg-brand-danger/10 hover:bg-brand-danger hover:text-white rounded-lg transition-colors border border-brand-danger/20"
+                  onClick={() => setSessionToEnd(session)}
+                >
                   <LogOut size={14} /> <span>إنهاء الجلسة</span>
                 </Button>
               )}
@@ -77,6 +93,38 @@ export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
           ))}
         </div>
       </div>
+
+      <Modal
+        isOpen={!!sessionToEnd}
+        onClose={() => setSessionToEnd(null)}
+        title="تأكيد إنهاء الجلسة"
+        footer={
+          <div className="p-6 border-t border-brand-border bg-brand-content flex justify-end gap-3 rounded-b-xl">
+            <Button variant="outline" onClick={() => setSessionToEnd(null)}>إلغاء</Button>
+            <Button className="bg-brand-danger hover:bg-brand-danger/90" onClick={handleEndSession}>تأكيد الإنهاء</Button>
+          </div>
+        }
+      >
+        <div className="p-6 space-y-4">
+          <p className="text-brand-text-primary">
+            هل تريد إنهاء الجلسة على الجهاز <strong>{sessionToEnd?.device}</strong>؟
+          </p>
+          <div className="bg-brand-content p-4 rounded-lg border border-brand-border space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-text-muted">الجهاز:</span>
+              <span className="font-bold">{sessionToEnd?.device}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-text-muted">عنوان IP:</span>
+              <span className="font-bold" dir="ltr">{sessionToEnd?.ip}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-text-muted">آخر نشاط:</span>
+              <span className="font-bold">{sessionToEnd?.time}</span>
+            </div>
+          </div>
+        </div>
+      </Modal>
 
     </div>
   );

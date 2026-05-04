@@ -6,11 +6,18 @@ import SearchInput from '../../../components/ui/SearchInput';
 import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
 import Modal from '../../../components/ui/Modal';
+import Pagination from '../../../components/ui/Pagination';
 
 export default function PaymentsTab() {
   const [selectedTx, setSelectedTx] = useState(null);
+  const [dateFilter, setDateFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-  const rows = [1, 2, 3, 4];
+  const rows = [1, 2, 3, 4, 5, 6, 7];
+  const totalPages = Math.ceil(rows.length / itemsPerPage);
+  const currentRows = rows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const columns = [
     { key: 'id', label: '#' },
     { key: 'tenant', label: 'المستأجر' },
@@ -26,16 +33,21 @@ export default function PaymentsTab() {
     <div className="animate-in fade-in duration-300">
       <div className="p-4 border-b border-brand-border bg-white flex flex-wrap gap-4 items-center">
         <SearchInput placeholder="بحث..." className="flex-1 min-w-[200px]" inputClassName="w-full pl-4 pr-10 py-2 rounded-lg border border-brand-border bg-brand-content focus:outline-none focus:border-brand-primary text-sm" />
-        <div className="flex items-center space-x-2 space-x-reverse border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm text-brand-text-muted cursor-pointer hover:border-brand-primary transition-colors">
+        <div className="relative flex items-center space-x-2 space-x-reverse border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm text-brand-text-muted hover:border-brand-primary transition-colors">
           <Calendar size={16} />
-          <span>تاريخ الدفع</span>
+          <input
+            type="date"
+            value={dateFilter}
+            onChange={(e) => { setDateFilter(e.target.value); setCurrentPage(1); }}
+            className="bg-transparent focus:outline-none text-brand-text-primary cursor-pointer"
+          />
         </div>
         <Select placeholder="حالة الدفع: الكل" options={[{ value: 'paid', label: 'مكتمل' }, { value: 'pending', label: 'معلق' }]} />
       </div>
       
       <Table
         columns={columns}
-        data={rows}
+        data={currentRows}
         renderRow={(i) => (
           <tr key={i} className="hover:bg-brand-content/50 transition-colors">
                 <td className="px-6 py-4 font-bold" dir="ltr">TRX-00{i}</td>
@@ -60,6 +72,12 @@ export default function PaymentsTab() {
         )}
       />
 
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+        </div>
+      )}
+
       <Modal
         isOpen={!!selectedTx}
         onClose={() => setSelectedTx(null)}
@@ -67,7 +85,7 @@ export default function PaymentsTab() {
         footer={
           <div className="p-6 border-t border-brand-border bg-brand-content flex justify-end gap-3 rounded-b-xl">
             <Button variant="outline" onClick={() => setSelectedTx(null)}>إلغاء</Button>
-            <Button className="bg-brand-danger hover:bg-brand-danger/90">تأكيد الإيقاف</Button>
+            <Button className="bg-brand-danger hover:bg-brand-danger/90" onClick={() => setSelectedTx(null)}>تأكيد الإيقاف</Button>
           </div>
         }
       >

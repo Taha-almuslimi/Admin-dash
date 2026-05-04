@@ -41,7 +41,7 @@ export default function DisputesTable() {
               <Button
                 unstyled
                 className="bg-brand-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-primary/90 transition-colors inline-flex items-center"
-                onClick={() => navigate('/disputes')}
+                onClick={() => navigate('/disputes', { state: { openReviewIndex: 0 } })}
               >
                 <Eye size={14} className="ml-1" /> مراجعة
               </Button>

@@ -15,12 +15,17 @@ export default function ComplaintsPage() {
   const location = useLocation();
 
   useEffect(() => {
+    if (location.state?.activeTab) {
+      setActiveTab(location.state.activeTab);
+    }
     if (location.state?.openActionModal) {
       modal.open();
-      // Optionally remove the state so it doesn't reopen on reload
+    }
+    if (location.state) {
       window.history.replaceState({}, document.title);
     }
-  }, [location.state, modal]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
