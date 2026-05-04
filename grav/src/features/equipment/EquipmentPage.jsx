@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import { Grid, List as ListIcon } from 'lucide-react';
 import FilterBar from '../../components/ui/FilterBar';
 import EquipmentGrid from './components/EquipmentGrid';
@@ -53,6 +54,8 @@ export default function EquipmentPage() {
     if (itemToHide) {
       setEquipment(prev => prev.filter(e => e.id !== itemToHide.id));
       setItemToHide(null);
+      drawer.close();
+      toast.success('تم إخفاء المعدة');
     }
   };
 
@@ -97,6 +100,9 @@ export default function EquipmentPage() {
         onClose={drawer.close}
         nextImage={nextImage}
         prevImage={prevImage}
+        onHideItem={(item) => setItemToHide(item)}
+        onEditItem={() => toast.success('تم تجهيز طلب التعديل')}
+        onDeleteItem={() => toast.success('تم تجهيز طلب الحذف')}
       />
 
       <Modal

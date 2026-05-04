@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import FilterBar from '../../../components/ui/FilterBar';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function RefundsTab() {
-  const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
@@ -17,22 +17,25 @@ export default function RefundsTab() {
   const insurances = ['100,000', '50,000', '30,000', '150,000', '80,000', '120,000', '45,000'];
   const refunds = ['100,000', '50,000', '25,000', '150,000', '80,000', '110,000', '45,000'];
   const statuses = [
-    { label: 'تم الاسترداد', color: 'success' },
-    { label: 'قيد المعالجة', color: 'warning' },
-    { label: 'خصم جزئي', color: 'info' },
+    { key: 'refunded', label: 'تم الاسترداد', color: 'success' },
+    { key: 'processing', label: 'قيد المعالجة', color: 'warning' },
+    { key: 'partial', label: 'خصم جزئي', color: 'info' },
   ];
 
-  // Dummy filter logic
   const filteredRows = rows.filter((i) => {
     const tenantName = tenants[i - 1];
+    const status = statuses[i % 3];
     if (search && !tenantName.includes(search)) return false;
+    if (statusFilter && status.key !== statusFilter) return false;
     return true;
   });
 
-  const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
-  const currentRows = filteredRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentRows,
+  } = usePagination(filteredRows, itemsPerPage);
 
   const columns = [
     { key: 'tenant', label: 'المستأجر' },
@@ -75,7 +78,7 @@ export default function RefundsTab() {
       )}
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </div>
       )}
     </div>

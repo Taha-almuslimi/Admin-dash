@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react';
 import { MapPin, Tag, User, Eye, Edit, EyeOff, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Pagination from '../../../components/ui/Pagination';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
-
-  const totalPages = Math.ceil((equipment?.length || 0) / itemsPerPage);
-  const currentData = equipment?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [equipment]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(equipment, itemsPerPage);
 
   return (
     <div>
@@ -123,7 +123,7 @@ export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

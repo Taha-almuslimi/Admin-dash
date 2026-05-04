@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
 import { FileText, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function RentalsTable({ rentals, onOpenDrawer }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  
-  const totalPages = Math.ceil((rentals?.length || 0) / itemsPerPage);
-  const currentData = rentals?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [rentals]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(rentals, itemsPerPage);
 
   const columns = [
     { key: 'id', label: 'ID' },
@@ -64,7 +64,7 @@ export default function RentalsTable({ rentals, onOpenDrawer }) {
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

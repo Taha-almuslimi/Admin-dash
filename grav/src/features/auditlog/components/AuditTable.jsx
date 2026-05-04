@@ -1,18 +1,21 @@
-import { useState, useEffect } from 'react';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import EmptyState from '../../../components/ui/EmptyState';
 import { Search } from 'lucide-react';
+import usePagination from '../../../hooks/usePagination';
 
 export default function AuditTable({ auditData }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
-  const totalPages = Math.ceil((auditData?.length || 0) / itemsPerPage);
-  const currentData = auditData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [auditData]);
+  const {
+    currentPage,
+    totalPages,
+    totalItems,
+    from,
+    to,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(auditData, itemsPerPage);
 
   const columns = [
     { key: 'time', label: 'الوقت' },
@@ -60,11 +63,11 @@ export default function AuditTable({ auditData }) {
       )}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
-          <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, auditData?.length || 0)} من {auditData?.length || 0} سجل</span>
+          <span>عرض {from} إلى {to} من {totalItems} سجل</span>
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

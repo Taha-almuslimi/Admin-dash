@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import SummaryCards from './components/SummaryCards';
 import ComplaintsTable from './components/ComplaintsTable';
 import NotificationsTab from './components/NotificationsTab';
@@ -12,8 +13,10 @@ import { complaintsTabs, complaintsData } from '../../data/complaints';
 export default function ComplaintsPage() {
   const [activeTab, setActiveTab] = useState('complaints');
   const [actionType, setActionType] = useState('warn');
+  const [complaints, setComplaints] = useState(complaintsData);
   const modal = useModal();
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Filter state
   const [search, setSearch] = useState('');
@@ -21,36 +24,57 @@ export default function ComplaintsPage() {
   const [typeFilter, setTypeFilter] = useState('');
 
   const filteredComplaints = useMemo(() => {
-    return complaintsData.filter((c) => {
+    return complaints.filter((c) => {
       const q = search.toLowerCase();
       const matchesSearch = !q || c.id.toLowerCase().includes(q) || c.reporter.includes(q) || c.target.includes(q);
       const matchesStatus = !statusFilter || c.statusKey === statusFilter;
       const matchesType = !typeFilter || c.typeKey === typeFilter;
       return matchesSearch && matchesStatus && matchesType;
     });
-  }, [search, statusFilter, typeFilter]);
+  }, [search, statusFilter, typeFilter, complaints]);
 
-  useEffect(() => {
-    if (location.state?.activeTab) {
-      setActiveTab(location.state.activeTab);
-    }
-    if (location.state?.openActionModal) {
-      modal.open();
-    }
+  const routeComplaint = location.state?.openActionModal
+    ? complaints.find((item) => item.id === location.state.complaintId) || complaints[0]
+    : null;
+  const currentActiveTab = location.state?.activeTab || activeTab;
+  const selectedComplaint = modal.selectedItem || routeComplaint;
+  const isComplaintModalOpen = modal.isOpen || !!routeComplaint;
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
     if (location.state) {
-      window.history.replaceState({}, document.title);
+      navigate('/complaints', { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.state]);
+  };
+
+  const closeComplaintModal = () => {
+    modal.close();
+    if (routeComplaint) {
+      navigate('/complaints', { replace: true });
+    }
+  };
+
+  const confirmComplaintAction = ({ complaint, type }) => {
+    if (!complaint) return;
+    setComplaints((prevComplaints) => prevComplaints.map((item) => {
+      if (item.id !== complaint.id) return item;
+      if (type === 'reject') {
+        return { ...item, status: 'مرفوض', statusKey: 'rejected', statusColor: 'danger' };
+      }
+      return { ...item, status: 'معالج', statusKey: 'resolved', statusColor: 'success' };
+    }));
+    toast.success(type === 'authorities' ? 'تم تسجيل الإبلاغ للجهات المختصة' : 'تم حفظ إجراء البلاغ');
+    closeComplaintModal();
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <SummaryCards />
 
       <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col min-h-[500px]">
-        <Tabs tabs={complaintsTabs} activeTab={activeTab} onChange={setActiveTab} />
+          <Tabs tabs={complaintsTabs} activeTab={currentActiveTab} onChange={handleTabChange} />
 
-        {activeTab === 'complaints' ? (
+        {currentActiveTab === 'complaints' ? (
           <>
             <div className="p-4 border-b border-brand-border bg-white">
               <FilterBar
@@ -63,7 +87,7 @@ export default function ComplaintsPage() {
                 ]}
               />
             </div>
-            <ComplaintsTable complaints={filteredComplaints} onOpenModal={() => modal.open()} />
+            <ComplaintsTable complaints={filteredComplaints} onOpenModal={modal.open} />
           </>
         ) : (
           <NotificationsTab />
@@ -71,10 +95,12 @@ export default function ComplaintsPage() {
       </div>
 
       <ComplaintModal
-        isOpen={modal.isOpen}
+        isOpen={isComplaintModalOpen}
+        complaint={selectedComplaint}
         actionType={actionType}
         setActionType={setActionType}
-        onClose={modal.close}
+        onClose={closeComplaintModal}
+        onConfirm={confirmComplaintAction}
       />
     </div>
   );

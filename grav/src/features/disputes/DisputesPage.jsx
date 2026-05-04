@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SummaryCards from './components/SummaryCards';
 import FilterBar from '../../components/ui/FilterBar';
 import DisputesTable from './components/DisputesTable';
@@ -11,6 +11,7 @@ export default function DisputesPage() {
   const [decision, setDecision] = useState('accept');
   const [adjustedAmount, setAdjustedAmount] = useState('50000');
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Filter state
   const [search, setSearch] = useState('');
@@ -25,14 +26,17 @@ export default function DisputesPage() {
     });
   }, [search, statusFilter]);
 
-  useEffect(() => {
-    if (location.state?.openReviewIndex !== undefined && disputesData[location.state.openReviewIndex]) {
-      setSelectedDispute(disputesData[location.state.openReviewIndex]);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      window.history.replaceState({}, document.title);
+  const routeSelectedDispute = useMemo(() => {
+    if (location.state?.disputeId) {
+      return disputesData.find((dispute) => dispute.id === location.state.disputeId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (location.state?.openReviewIndex !== undefined) {
+      return disputesData[location.state.openReviewIndex];
+    }
+    return null;
   }, [location.state]);
+
+  const activeDispute = selectedDispute || routeSelectedDispute;
 
   const openReview = (dispute) => {
     setSelectedDispute(dispute);
@@ -41,12 +45,15 @@ export default function DisputesPage() {
 
   const closeReview = () => {
     setSelectedDispute(null);
+    if (routeSelectedDispute) {
+      navigate('/disputes', { replace: true });
+    }
   };
 
-  if (selectedDispute) {
+  if (activeDispute) {
     return (
       <DisputeReviewPage
-        dispute={selectedDispute}
+        dispute={activeDispute}
         decision={decision}
         setDecision={setDecision}
         adjustedAmount={adjustedAmount}

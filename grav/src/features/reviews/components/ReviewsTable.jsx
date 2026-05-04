@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
 import { Star, Eye, Trash2, Flag, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 const renderStars = (rating) => {
   return Array(5).fill(0).map((_, i) => (
@@ -12,14 +12,14 @@ const renderStars = (rating) => {
   ));
 };
 
-export default function ReviewsTable({ reviews, onOpenDrawer }) {
-  const [currentPage, setCurrentPage] = useState(1);
+export default function ReviewsTable({ reviews, onOpenDrawer, onDeleteReview, onReportReview }) {
   const itemsPerPage = 5;
-
-  const totalPages = Math.ceil((reviews?.length || 0) / itemsPerPage);
-  const currentData = reviews?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [reviews]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(reviews, itemsPerPage);
 
   const columns = [
     { key: 'id', label: '#' },
@@ -74,10 +74,10 @@ export default function ReviewsTable({ reviews, onOpenDrawer }) {
                     <Button unstyled onClick={() => onOpenDrawer(rev)} className="p-1.5 text-brand-text-muted hover:text-brand-info hover:bg-brand-info/10 rounded-lg transition-colors" title="عرض التفاصيل">
                       <Eye size={18} />
                     </Button>
-                    <Button unstyled className="p-1.5 text-brand-text-muted hover:text-brand-danger hover:bg-brand-danger/10 rounded-lg transition-colors" title="حذف التقييم">
+                    <Button unstyled onClick={() => onDeleteReview?.(rev.id)} className="p-1.5 text-brand-text-muted hover:text-brand-danger hover:bg-brand-danger/10 rounded-lg transition-colors" title="حذف التقييم">
                       <Trash2 size={18} />
                     </Button>
-                    <Button unstyled className="p-1.5 text-brand-text-muted hover:text-brand-warning hover:bg-brand-warning/10 rounded-lg transition-colors" title="إبلاغ">
+                    <Button unstyled onClick={() => onReportReview?.(rev)} className="p-1.5 text-brand-text-muted hover:text-brand-warning hover:bg-brand-warning/10 rounded-lg transition-colors" title="إبلاغ">
                       <Flag size={18} />
                     </Button>
                   </div>
@@ -91,7 +91,7 @@ export default function ReviewsTable({ reviews, onOpenDrawer }) {
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

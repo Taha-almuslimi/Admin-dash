@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Calendar, StopCircle } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
@@ -6,18 +6,41 @@ import Table from '../../../components/ui/Table';
 import Modal from '../../../components/ui/Modal';
 import Pagination from '../../../components/ui/Pagination';
 import FilterBar from '../../../components/ui/FilterBar';
+import usePagination from '../../../hooks/usePagination';
 
 export default function PaymentsTab() {
   const [selectedTx, setSelectedTx] = useState(null);
   const [dateFilter, setDateFilter] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
-  const rows = [1, 2, 3, 4, 5, 6, 7];
-  const totalPages = Math.ceil(rows.length / itemsPerPage);
-  const currentRows = rows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const rows = useMemo(() => [1, 2, 3, 4, 5, 6, 7].map((i) => ({
+    id: `TRX-00${i}`,
+    tenant: i % 2 === 0 ? 'ياسر علي' : 'أحمد محمد',
+    equipment: i % 3 === 0 ? 'رافعة شوكية' : 'حفار JCB',
+    rent: 15000 + i * 1000,
+    insurance: 50000,
+    date: `2024-05-${String(i + 10).padStart(2, '0')}`,
+    status: i % 3 === 0 ? 'معلق' : 'مكتمل',
+    statusKey: i % 3 === 0 ? 'pending' : 'paid',
+    statusColor: i % 3 === 0 ? 'warning' : 'success',
+  })), []);
+
+  const filteredRows = rows.filter((row) => {
+    const q = search.toLowerCase();
+    const matchesSearch = !q || row.id.toLowerCase().includes(q) || row.tenant.includes(q) || row.equipment.includes(q);
+    const matchesStatus = !statusFilter || row.statusKey === statusFilter;
+    const matchesDate = !dateFilter || row.date === dateFilter;
+    return matchesSearch && matchesStatus && matchesDate;
+  });
+
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentRows,
+  } = usePagination(filteredRows, itemsPerPage);
 
   const columns = [
     { key: 'id', label: '#' },
@@ -43,7 +66,7 @@ export default function PaymentsTab() {
           extraActions={
             <div className="relative flex items-center space-x-2 space-x-reverse border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm text-brand-text-muted hover:border-brand-primary transition-colors">
               <Calendar size={16} />
-              <input type="date" value={dateFilter} onChange={(e) => { setDateFilter(e.target.value); setCurrentPage(1); }} className="bg-transparent focus:outline-none text-brand-text-primary cursor-pointer" />
+              <input type="date" value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className="bg-transparent focus:outline-none text-brand-text-primary cursor-pointer" />
             </div>
           }
         />
@@ -52,22 +75,22 @@ export default function PaymentsTab() {
       <Table
         columns={columns}
         data={currentRows}
-        renderRow={(i) => (
-          <tr key={i} className="hover:bg-brand-content/50 transition-colors">
-                <td className="px-6 py-4 font-bold" dir="ltr">TRX-00{i}</td>
-                <td className="px-6 py-4 font-medium">أحمد محمد</td>
-                <td className="px-6 py-4 text-brand-text-muted">حفار JCB</td>
-                <td className="px-6 py-4 font-bold text-brand-primary">15,000 ر.ي</td>
-                <td className="px-6 py-4 font-medium">50,000 ر.ي</td>
-                <td className="px-6 py-4 text-brand-text-muted" dir="ltr">2024-05-1{i}</td>
+        renderRow={(row) => (
+          <tr key={row.id} className="hover:bg-brand-content/50 transition-colors">
+                <td className="px-6 py-4 font-bold" dir="ltr">{row.id}</td>
+                <td className="px-6 py-4 font-medium">{row.tenant}</td>
+                <td className="px-6 py-4 text-brand-text-muted">{row.equipment}</td>
+                <td className="px-6 py-4 font-bold text-brand-primary">{row.rent.toLocaleString()} ر.ي</td>
+                <td className="px-6 py-4 font-medium">{row.insurance.toLocaleString()} ر.ي</td>
+                <td className="px-6 py-4 text-brand-text-muted" dir="ltr">{row.date}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className="px-2.5 py-1 bg-brand-success/10 text-brand-success rounded-md text-xs font-bold">مكتمل</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 bg-brand-${row.statusColor}/10 text-brand-${row.statusColor} rounded-md text-xs font-bold`}>{row.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button 
                     unstyled 
                     className="text-brand-danger hover:bg-brand-danger/10 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center"
-                    onClick={() => setSelectedTx(`TRX-00${i}`)}
+                    onClick={() => setSelectedTx(row)}
                   >
                     <StopCircle size={14} className="ml-1" /> إيقاف/مراجعة
                   </Button>
@@ -78,7 +101,7 @@ export default function PaymentsTab() {
 
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </div>
       )}
 
@@ -95,7 +118,7 @@ export default function PaymentsTab() {
       >
         <div className="p-6 space-y-4">
           <p className="text-brand-text-primary">
-            اختر الإجراء المناسب للعملية <strong>{selectedTx}</strong>:
+            اختر الإجراء المناسب للعملية <strong>{selectedTx?.id}</strong>:
           </p>
           <div className="space-y-3">
             <label className="flex items-start gap-3 p-3 border border-brand-border rounded-lg cursor-pointer hover:border-brand-primary">

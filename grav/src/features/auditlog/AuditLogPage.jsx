@@ -4,6 +4,7 @@ import WarningBanner from './components/WarningBanner';
 import FilterBar from '../../components/ui/FilterBar';
 import AuditTable from './components/AuditTable';
 import { auditData } from '../../data/auditlog';
+import { exportCsv } from '../../utils/exportCsv';
 
 export default function AuditLogPage() {
   // Filter state
@@ -42,7 +43,14 @@ export default function AuditLogPage() {
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="bg-transparent focus:outline-none text-brand-text-primary cursor-pointer" title="إلى" />
           </div>
         }
-        onExport={() => {}}
+        onExport={() => exportCsv('audit-log.csv', filteredAudit, [
+          { label: 'الوقت', value: 'time' },
+          { label: 'المسؤول', value: 'admin' },
+          { label: 'الدور', value: 'role' },
+          { label: 'الحدث', value: 'event' },
+          { label: 'التفاصيل', value: 'details' },
+          { label: 'IP', value: 'ip' },
+        ])}
         exportLabel="تصدير السجل"
       />
       <AuditTable auditData={filteredAudit} />

@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import FilterBar from '../../../components/ui/FilterBar';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function ProfitsTab() {
-  const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
@@ -16,22 +16,25 @@ export default function ProfitsTab() {
   const owners = ['مؤسسة التقنية', 'شركة البناء الحديثة', 'أحمد محمد', 'شركة الإعمار', 'مؤسسة النقل', 'علي صالح', 'شركة السلام', 'مؤسسة الأمل'];
   const amounts = ['450,000', '320,000', '180,000', '750,000', '95,000', '210,000', '560,000', '140,000'];
   const statuses = [
-    { label: 'Processing', color: 'info' },
-    { label: 'تم التحويل', color: 'success' },
-    { label: 'معلق', color: 'warning' },
+    { key: 'processing', label: 'Processing', color: 'info' },
+    { key: 'completed', label: 'تم التحويل', color: 'success' },
+    { key: 'pending', label: 'معلق', color: 'warning' },
   ];
 
-  // Dummy filter logic
   const filteredRows = rows.filter((i) => {
     const ownerName = owners[i - 1];
+    const status = statuses[i % 3];
     if (search && !ownerName.includes(search)) return false;
+    if (statusFilter && status.key !== statusFilter) return false;
     return true;
   });
 
-  const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
-  const currentRows = filteredRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentRows,
+  } = usePagination(filteredRows, itemsPerPage);
 
   const columns = [
     { key: 'owner', label: 'المؤجر' },
@@ -72,7 +75,7 @@ export default function ProfitsTab() {
       )}
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </div>
       )}
     </div>

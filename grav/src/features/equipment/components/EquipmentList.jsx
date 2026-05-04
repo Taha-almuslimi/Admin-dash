@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react';
 import { Eye, Edit, EyeOff, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
-  const totalPages = Math.ceil((equipment?.length || 0) / itemsPerPage);
-  const currentData = equipment?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [equipment]);
+  const {
+    currentPage,
+    totalPages,
+    totalItems,
+    from,
+    to,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(equipment, itemsPerPage);
 
   const columns = [
     { key: 'equipment', label: 'المعدة' },
@@ -73,11 +76,11 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
       )}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
-          <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, equipment?.length || 0)} من {equipment?.length || 0} معدة</span>
+          <span>عرض {from} إلى {to} من {totalItems} معدة</span>
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

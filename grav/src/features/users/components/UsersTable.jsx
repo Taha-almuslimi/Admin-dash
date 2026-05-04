@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react';
 import { Eye, AlertTriangle, PauseCircle, Ban, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Pagination from '../../../components/ui/Pagination';
 import Table from '../../../components/ui/Table';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
-  const totalPages = Math.ceil((users?.length || 0) / itemsPerPage);
-  const currentData = users?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [users]);
+  const {
+    currentPage,
+    totalPages,
+    totalItems,
+    from,
+    to,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(users, itemsPerPage);
 
   const columns = [
     { key: 'user', label: 'المستخدم' },
@@ -80,11 +83,11 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
       )}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
-          <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, users?.length || 0)} من {users?.length || 0} مستخدم</span>
+          <span>عرض {from} إلى {to} من {totalItems} مستخدم</span>
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

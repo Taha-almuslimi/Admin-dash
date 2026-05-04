@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import toast from 'react-hot-toast';
 import FilterBar from '../../components/ui/FilterBar';
 import ReviewsTable from './components/ReviewsTable';
 import ReviewDrawer from './components/ReviewDrawer';
@@ -32,6 +33,17 @@ export default function ReviewsPage() {
   const handleDeleteReview = (reviewId) => {
     setReviews(prev => prev.filter(r => r.id !== reviewId));
     drawer.close();
+    toast.success('تم إخفاء التقييم');
+  };
+
+  const handleKeepReview = () => {
+    toast.success('تم إبقاء التقييم');
+    drawer.close();
+  };
+
+  const handleReportReview = () => {
+    toast.success('تم تسجيل بلاغ على التقييم');
+    drawer.close();
   };
 
   const handleOpenLinkedRental = (opId) => {
@@ -54,13 +66,20 @@ export default function ReviewsPage() {
           { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'active', label: 'نشط' }, { value: 'deleted', label: 'محذوف' }] },
         ]}
       />
-      <ReviewsTable reviews={filteredReviews} onOpenDrawer={drawer.open} />
+      <ReviewsTable
+        reviews={filteredReviews}
+        onOpenDrawer={drawer.open}
+        onDeleteReview={handleDeleteReview}
+        onReportReview={handleReportReview}
+      />
       <ReviewDrawer 
         isOpen={drawer.isOpen} 
         review={drawer.selectedItem} 
         onClose={drawer.close} 
         onOpenLinkedRental={handleOpenLinkedRental}
         onDeleteReview={handleDeleteReview}
+        onKeepReview={handleKeepReview}
+        onReportReview={handleReportReview}
       />
       <RentalDrawer 
         isOpen={rentalDrawer.isOpen} 

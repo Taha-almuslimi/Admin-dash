@@ -2,10 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
+import { complaintsData } from '../../../data/complaints';
 
 export default function ComplaintsTable() {
   const navigate = useNavigate();
-  const rows = [1, 2, 3];
+  const rows = complaintsData.slice(0, 3);
   const columns = [
     { key: 'id', label: '#', className: 'py-3 px-4 rounded-r-lg' },
     { key: 'reporter', label: 'المُبلِّغ', className: 'py-3 px-4' },
@@ -29,19 +30,19 @@ export default function ComplaintsTable() {
         columns={columns}
         data={rows}
         theadClassName="bg-brand-content text-brand-text-muted font-medium"
-        renderRow={(i) => (
-          <tr key={i} className="hover:bg-brand-content/50 transition-colors">
-                <td className="py-3 px-4 text-brand-text-muted">#R-80{i}</td>
-                <td className="py-3 px-4 font-medium">ياسر علي</td>
+        renderRow={(complaint) => (
+          <tr key={complaint.id} className="hover:bg-brand-content/50 transition-colors">
+                <td className="py-3 px-4 text-brand-text-muted" dir="ltr">{complaint.id}</td>
+                <td className="py-3 px-4 font-medium">{complaint.reporter}</td>
                 <td className="py-3 px-4">
-                  <Badge unstyled className="px-2 py-1 bg-brand-warning/10 text-brand-warning rounded-md text-xs font-bold">سلوك مسيء</Badge>
+                  <Badge unstyled className={`px-2 py-1 bg-brand-${complaint.statusColor}/10 text-brand-${complaint.statusColor} rounded-md text-xs font-bold`}>{complaint.type}</Badge>
                 </td>
-                <td className="py-3 px-4 text-brand-text-muted">منذ ساعتين</td>
+                <td className="py-3 px-4 text-brand-text-muted">{complaint.date}</td>
                 <td className="py-3 px-4 text-center">
                   <Button 
                     unstyled 
                     className="border border-brand-primary text-brand-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-primary/10 transition-colors inline-flex items-center"
-                    onClick={() => navigate('/complaints', { state: { openActionModal: true } })}
+                    onClick={() => navigate('/complaints', { state: { openActionModal: true, complaintId: complaint.id } })}
                   >
                     معالجة
                   </Button>

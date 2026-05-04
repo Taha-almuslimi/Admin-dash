@@ -10,7 +10,15 @@ const renderStars = (rating) => {
   ));
 };
 
-export default function ReviewDrawer({ isOpen, review, onClose, onOpenLinkedRental, onDeleteReview }) {
+export default function ReviewDrawer({
+  isOpen,
+  review,
+  onClose,
+  onOpenLinkedRental,
+  onDeleteReview,
+  onKeepReview,
+  onReportReview,
+}) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleDelete = () => {
@@ -29,7 +37,7 @@ export default function ReviewDrawer({ isOpen, review, onClose, onOpenLinkedRent
         bodyClassName="flex-1 overflow-y-auto p-6 space-y-6"
         footer={review && (
           <div className="p-4 border-t border-brand-border bg-white flex space-x-3 space-x-reverse">
-            <Button unstyled className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-success/10 text-brand-success hover:bg-brand-success hover:text-white transition-colors border border-brand-success/20 flex items-center justify-center">
+            <Button unstyled onClick={() => onKeepReview?.(review)} className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-success/10 text-brand-success hover:bg-brand-success hover:text-white transition-colors border border-brand-success/20 flex items-center justify-center">
               <CheckCircle size={18} className="ml-2" /> إبقاء التقييم
             </Button>
             <Button 
@@ -39,7 +47,7 @@ export default function ReviewDrawer({ isOpen, review, onClose, onOpenLinkedRent
             >
               <EyeOff size={18} className="ml-2" /> إخفاء
             </Button>
-            <Button unstyled className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-warning/10 text-brand-warning hover:bg-brand-warning hover:text-white transition-colors border border-brand-warning/20 flex items-center justify-center">
+            <Button unstyled onClick={() => onReportReview?.(review)} className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-warning/10 text-brand-warning hover:bg-brand-warning hover:text-white transition-colors border border-brand-warning/20 flex items-center justify-center">
               <Flag size={18} className="ml-2" /> إبلاغ
             </Button>
           </div>

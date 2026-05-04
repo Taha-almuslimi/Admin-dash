@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import EmptyState from '../../../components/ui/EmptyState';
 import { Search } from 'lucide-react';
+import usePagination from '../../../hooks/usePagination';
 
 export default function DisputesTable({ disputes, onOpenReview }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
-  const totalPages = Math.ceil((disputes?.length || 0) / itemsPerPage);
-  const currentData = disputes?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [disputes]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(disputes, itemsPerPage);
 
   const columns = [
     { key: 'id', label: 'ID' },
@@ -65,7 +65,7 @@ export default function DisputesTable({ disputes, onOpenReview }) {
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

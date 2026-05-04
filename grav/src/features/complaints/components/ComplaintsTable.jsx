@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
 import { MessageSquare, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function ComplaintsTable({ complaints, onOpenModal }) {
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
-  const totalPages = Math.ceil((complaints?.length || 0) / itemsPerPage);
-  const currentData = complaints?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
-
-  useEffect(() => { setCurrentPage(1); }, [complaints]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentData,
+  } = usePagination(complaints, itemsPerPage);
 
   const columns = [
     { key: 'id', label: '#' },
@@ -50,7 +50,7 @@ export default function ComplaintsTable({ complaints, onOpenModal }) {
                   <Badge unstyled className={`px-2.5 py-1 bg-brand-${complaint.statusColor}/10 text-brand-${complaint.statusColor} rounded-md text-xs font-bold`}>{complaint.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <Button unstyled onClick={onOpenModal} className="border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center">
+                  <Button unstyled onClick={() => onOpenModal(complaint)} className="border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center">
                     <MessageSquare size={14} className="ml-1" /> معالجة
                   </Button>
                 </td>
@@ -63,7 +63,7 @@ export default function ComplaintsTable({ complaints, onOpenModal }) {
           <Pagination 
             currentPage={currentPage} 
             totalPages={totalPages} 
-            onPageChange={setCurrentPage} 
+            onPageChange={setPage} 
           />
         </div>
       )}

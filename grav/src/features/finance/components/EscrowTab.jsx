@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { PauseCircle, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
@@ -7,27 +7,36 @@ import Modal from '../../../components/ui/Modal';
 import Pagination from '../../../components/ui/Pagination';
 import FilterBar from '../../../components/ui/FilterBar';
 import EmptyState from '../../../components/ui/EmptyState';
+import usePagination from '../../../hooks/usePagination';
 
 export default function EscrowTab() {
   const [selectedOp, setSelectedOp] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
-  const rows = [1, 2, 3, 4, 5, 6, 7];
-  
-  // Dummy filter logic for UI demonstration
-  const filteredRows = rows.filter(i => {
-    const id = `OP-2024-08${i}`;
-    if (search && !id.toLowerCase().includes(search.toLowerCase())) return false;
-    return true;
+  const rows = useMemo(() => [1, 2, 3, 4, 5, 6, 7].map((i) => ({
+    id: `OP-2024-08${i}`,
+    amount: 150000 + i * 10000,
+    since: '12 مايو 2024',
+    status: i % 3 === 0 ? 'Completed' : 'In Use',
+    statusKey: i % 3 === 0 ? 'completed' : 'inuse',
+    statusColor: i % 3 === 0 ? 'success' : 'warning',
+  })), []);
+
+  const filteredRows = rows.filter((row) => {
+    const q = search.toLowerCase();
+    const matchesSearch = !q || row.id.toLowerCase().includes(q);
+    const matchesStatus = !statusFilter || row.statusKey === statusFilter;
+    return matchesSearch && matchesStatus;
   });
 
-  const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
-  const currentRows = filteredRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);
+  const {
+    currentPage,
+    totalPages,
+    setPage,
+    paginatedData: currentRows,
+  } = usePagination(filteredRows, itemsPerPage);
 
   const columns = [
     { key: 'op', label: 'عملية' },
@@ -65,19 +74,19 @@ export default function EscrowTab() {
       <Table
         columns={columns}
         data={currentRows}
-        renderRow={(i) => (
-          <tr key={i} className="hover:bg-brand-content/50 transition-colors">
-                <td className="px-6 py-4 font-bold" dir="ltr">OP-2024-08{i}</td>
-                <td className="px-6 py-4 font-bold text-brand-warning">150,000 ر.ي</td>
-                <td className="px-6 py-4 text-brand-text-muted">12 مايو 2024</td>
+        renderRow={(row) => (
+          <tr key={row.id} className="hover:bg-brand-content/50 transition-colors">
+                <td className="px-6 py-4 font-bold" dir="ltr">{row.id}</td>
+                <td className="px-6 py-4 font-bold text-brand-warning">{row.amount.toLocaleString()} ر.ي</td>
+                <td className="px-6 py-4 text-brand-text-muted">{row.since}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className="px-2.5 py-1 bg-brand-warning/10 text-brand-warning rounded-md text-xs font-bold">In Use</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 bg-brand-${row.statusColor}/10 text-brand-${row.statusColor} rounded-md text-xs font-bold`}>{row.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button 
                     unstyled 
                     className="text-brand-danger border border-brand-danger hover:bg-brand-danger/10 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center"
-                    onClick={() => setSelectedOp(`OP-2024-08${i}`)}
+                    onClick={() => setSelectedOp(row)}
                   >
                     <PauseCircle size={14} className="ml-1" /> تعليق الأموال
                   </Button>
@@ -89,7 +98,7 @@ export default function EscrowTab() {
 
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
         </div>
       )}
 
@@ -106,16 +115,16 @@ export default function EscrowTab() {
       >
         <div className="p-6 space-y-4">
           <p className="text-brand-text-primary">
-            هل تريد تعليق الأموال المحتجزة للعملية <strong>{selectedOp}</strong>؟
+            هل تريد تعليق الأموال المحتجزة للعملية <strong>{selectedOp?.id}</strong>؟
           </p>
           <div className="bg-brand-content p-4 rounded-lg border border-brand-border space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-brand-text-muted">المبلغ المحتجز:</span>
-              <span className="font-bold text-brand-warning">150,000 ر.ي</span>
+              <span className="font-bold text-brand-warning">{selectedOp?.amount.toLocaleString()} ر.ي</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-brand-text-muted">تاريخ الاحتجاز:</span>
-              <span className="font-bold">12 مايو 2024</span>
+              <span className="font-bold">{selectedOp?.since}</span>
             </div>
           </div>
           <div>
