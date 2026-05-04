@@ -1,19 +1,19 @@
-import { useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { MessageSquare, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
-import SearchInput from '../../../components/ui/SearchInput';
-import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
+import EmptyState from '../../../components/ui/EmptyState';
 
-export default function ComplaintsTable({ onOpenModal }) {
+export default function ComplaintsTable({ complaints, onOpenModal }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const allRows = [1, 2, 3, 4, 5, 6, 7]; // Example rows
-  const totalPages = Math.ceil(allRows.length / itemsPerPage);
-  const currentRows = allRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil((complaints?.length || 0) / itemsPerPage);
+  const currentData = complaints?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
+  useEffect(() => { setCurrentPage(1); }, [complaints]);
 
   const columns = [
     { key: 'id', label: '#' },
@@ -28,28 +28,26 @@ export default function ComplaintsTable({ onOpenModal }) {
 
   return (
     <div className="animate-in fade-in duration-300">
-      <div className="p-4 border-b border-brand-border bg-white flex flex-wrap gap-4 items-center">
-        <SearchInput placeholder="بحث..." className="flex-1 min-w-[200px]" inputClassName="w-full pl-4 pr-10 py-2 rounded-lg border border-brand-border bg-brand-content focus:outline-none focus:border-brand-primary text-sm" />
-        <Select placeholder="أولوية: الكل" options={[{ value: 'high', label: '🔴 عالية' }, { value: 'normal', label: '⚪ عادية' }]} />
-      </div>
-      
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
-        data={currentRows}
-        renderRow={(i) => (
-          <tr key={i} className="hover:bg-brand-content/50 transition-colors">
-                <td className="px-6 py-4 font-bold text-brand-text-muted" dir="ltr">RPT-00{i}</td>
-                <td className="px-6 py-4 font-bold text-brand-text-primary">ياسر علي</td>
+        data={currentData}
+        renderRow={(complaint) => (
+          <tr key={complaint.id} className="hover:bg-brand-content/50 transition-colors">
+                <td className="px-6 py-4 font-bold text-brand-text-muted" dir="ltr">{complaint.id}</td>
+                <td className="px-6 py-4 font-bold text-brand-text-primary">{complaint.reporter}</td>
                 <td className="px-6 py-4">
-                  <Badge unstyled className="px-2.5 py-1 bg-brand-info/10 text-brand-info rounded-md text-xs font-bold">مستخدم</Badge>
+                  <Badge unstyled className="px-2.5 py-1 bg-brand-info/10 text-brand-info rounded-md text-xs font-bold">{complaint.type}</Badge>
                 </td>
-                <td className="px-6 py-4 font-medium">أحمد محمد</td>
-                <td className="px-6 py-4 text-brand-text-muted">منذ ساعتين</td>
+                <td className="px-6 py-4 font-medium">{complaint.target}</td>
+                <td className="px-6 py-4 text-brand-text-muted">{complaint.date}</td>
                 <td className="px-6 py-4 text-center">
-                  {i === 1 ? <span className="text-brand-danger font-bold text-xs">🔴 عالية</span> : <span className="text-brand-text-muted text-xs">عادية</span>}
+                  {complaint.priorityKey === 'high' ? <span className="text-brand-danger font-bold text-xs">🔴 عالية</span> : <span className="text-brand-text-muted text-xs">عادية</span>}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className="px-2.5 py-1 bg-brand-warning/10 text-brand-warning rounded-md text-xs font-bold">جديد</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 bg-brand-${complaint.statusColor}/10 text-brand-${complaint.statusColor} rounded-md text-xs font-bold`}>{complaint.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button unstyled onClick={onOpenModal} className="border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center">
@@ -59,6 +57,7 @@ export default function ComplaintsTable({ onOpenModal }) {
               </tr>
         )}
       />
+      )}
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
           <Pagination 

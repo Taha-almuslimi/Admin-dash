@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
+import EmptyState from '../../../components/ui/EmptyState';
+import { Search } from 'lucide-react';
 
 export default function AuditTable({ auditData }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -9,6 +11,8 @@ export default function AuditTable({ auditData }) {
 
   const totalPages = Math.ceil((auditData?.length || 0) / itemsPerPage);
   const currentData = auditData?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
+  useEffect(() => { setCurrentPage(1); }, [auditData]);
 
   const columns = [
     { key: 'time', label: 'الوقت' },
@@ -21,6 +25,9 @@ export default function AuditTable({ auditData }) {
 
   return (
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentData}
@@ -50,6 +57,7 @@ export default function AuditTable({ auditData }) {
               </tr>
         )}
       />
+      )}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
           <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, auditData?.length || 0)} من {auditData?.length || 0} سجل</span>

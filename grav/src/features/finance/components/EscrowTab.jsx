@@ -1,19 +1,34 @@
-import { useState } from 'react';
-import { PauseCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { PauseCircle, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Modal from '../../../components/ui/Modal';
 import Pagination from '../../../components/ui/Pagination';
+import FilterBar from '../../../components/ui/FilterBar';
+import EmptyState from '../../../components/ui/EmptyState';
 
 export default function EscrowTab() {
   const [selectedOp, setSelectedOp] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
   const rows = [1, 2, 3, 4, 5, 6, 7];
-  const totalPages = Math.ceil(rows.length / itemsPerPage);
-  const currentRows = rows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  
+  // Dummy filter logic for UI demonstration
+  const filteredRows = rows.filter(i => {
+    const id = `OP-2024-08${i}`;
+    if (search && !id.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
+  const currentRows = filteredRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);
+
   const columns = [
     { key: 'op', label: 'عملية' },
     { key: 'amount', label: 'مبلغ محتجز' },
@@ -34,6 +49,19 @@ export default function EscrowTab() {
           <p className="text-2xl font-bold text-brand-text-primary">34</p>
         </div>
       </div>
+      <div className="p-4 border-b border-brand-border bg-white">
+        <FilterBar
+          searchPlaceholder="بحث برقم العملية..."
+          searchValue={search}
+          onSearchChange={(e) => setSearch(e.target.value)}
+          filters={[
+            { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'inuse', label: 'In Use' }, { value: 'completed', label: 'Completed' }] },
+          ]}
+        />
+      </div>
+      {currentRows.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentRows}
@@ -57,6 +85,7 @@ export default function EscrowTab() {
               </tr>
         )}
       />
+      )}
 
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">

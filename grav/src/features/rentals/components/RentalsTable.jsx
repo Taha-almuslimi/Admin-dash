@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { FileText, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
+import EmptyState from '../../../components/ui/EmptyState';
 
 export default function RentalsTable({ rentals, onOpenDrawer }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,6 +12,8 @@ export default function RentalsTable({ rentals, onOpenDrawer }) {
   
   const totalPages = Math.ceil((rentals?.length || 0) / itemsPerPage);
   const currentData = rentals?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
+  useEffect(() => { setCurrentPage(1); }, [rentals]);
 
   const columns = [
     { key: 'id', label: 'ID' },
@@ -25,6 +28,9 @@ export default function RentalsTable({ rentals, onOpenDrawer }) {
 
   return (
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentData}
@@ -52,6 +58,7 @@ export default function RentalsTable({ rentals, onOpenDrawer }) {
               </tr>
         )}
       />
+      )}
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
           <Pagination 

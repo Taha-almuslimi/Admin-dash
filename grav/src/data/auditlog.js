@@ -1,7 +1,9 @@
 export const auditData = [
-  { id: 1, time: '18 مايو 2024, 14:30', admin: 'أحمد علي', role: 'Super Admin', roleColor: 'success', event: 'إجراء مالي', eventColor: 'success', details: 'تحويل أرباح للمؤجر مؤسسة التقنية بقيمة 450,000 ر.ي', ip: '192.168.1.45' },
-  { id: 2, time: '18 مايو 2024, 11:15', admin: 'سارة محمد', role: 'Support', roleColor: 'info', event: 'قرار نزاع', eventColor: 'warning', details: 'إغلاق النزاع #D-2024-001 وقبول الخصم بقيمة 50,000 ر.ي', ip: '10.0.0.12' },
-  { id: 3, time: '17 مايو 2024, 09:45', admin: 'أحمد علي', role: 'Super Admin', roleColor: 'success', event: 'تعديل بيانات', eventColor: 'info', details: 'تحديث سياسة الاستخدام (البند 3.1)', ip: '192.168.1.45' },
-  { id: 4, time: '16 مايو 2024, 16:20', admin: 'سارة محمد', role: 'Support', roleColor: 'info', event: 'حذف محتوى', eventColor: 'warning', details: 'حذف التقييم #REV-003 لمخالفته الآداب العامة', ip: '10.0.0.12' },
-  { id: 5, time: '15 مايو 2024, 10:05', admin: 'خالد عمر', role: 'Finance', roleColor: 'warning', event: 'حظر/تعليق مستخدم', eventColor: 'danger', details: 'حظر دائم للمستخدم "علي صالح" لاحتيال مالي', ip: '172.16.0.5' },
+  { id: 1, time: '18 مايو 2024, 14:30', admin: 'أحمد علي', adminKey: 'ahmed', role: 'Super Admin', roleColor: 'success', event: 'إجراء مالي', eventKey: 'finance', eventColor: 'success', details: 'تحويل أرباح للمؤجر مؤسسة التقنية بقيمة 450,000 ر.ي', ip: '192.168.1.45' },
+  { id: 2, time: '18 مايو 2024, 11:15', admin: 'سارة محمد', adminKey: 'sara', role: 'Support', roleColor: 'info', event: 'قرار نزاع', eventKey: 'dispute', eventColor: 'warning', details: 'إغلاق النزاع #D-2024-001 وقبول الخصم بقيمة 50,000 ر.ي', ip: '10.0.0.12' },
+  { id: 3, time: '17 مايو 2024, 09:45', admin: 'أحمد علي', adminKey: 'ahmed', role: 'Super Admin', roleColor: 'success', event: 'تعديل بيانات', eventKey: 'edit', eventColor: 'info', details: 'تحديث سياسة الاستخدام (البند 3.1)', ip: '192.168.1.45' },
+  { id: 4, time: '16 مايو 2024, 16:20', admin: 'سارة محمد', adminKey: 'sara', role: 'Support', roleColor: 'info', event: 'حذف محتوى', eventKey: 'delete', eventColor: 'warning', details: 'حذف التقييم #REV-003 لمخالفته الآداب العامة', ip: '10.0.0.12' },
+  { id: 5, time: '15 مايو 2024, 10:05', admin: 'خالد عمر', adminKey: 'khaled', role: 'Finance', roleColor: 'warning', event: 'حظر/تعليق مستخدم', eventKey: 'ban', eventColor: 'danger', details: 'حظر دائم للمستخدم "علي صالح" لاحتيال مالي', ip: '172.16.0.5' },
+  { id: 6, time: '14 مايو 2024, 08:30', admin: 'أحمد علي', adminKey: 'ahmed', role: 'Super Admin', roleColor: 'success', event: 'إجراء مالي', eventKey: 'finance', eventColor: 'success', details: 'استرداد تأمين للمستأجر ياسر علي بقيمة 100,000 ر.ي', ip: '192.168.1.45' },
+  { id: 7, time: '13 مايو 2024, 15:00', admin: 'خالد عمر', adminKey: 'khaled', role: 'Finance', roleColor: 'warning', event: 'تعديل بيانات', eventKey: 'edit', eventColor: 'info', details: 'تعديل بيانات المعدة #EQ-004', ip: '172.16.0.5' },
 ];

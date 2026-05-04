@@ -1,24 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
+import FilterBar from '../../../components/ui/FilterBar';
+import EmptyState from '../../../components/ui/EmptyState';
 
 export default function RefundsTab() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
   const rows = [1, 2, 3, 4, 5, 6, 7];
-  const totalPages = Math.ceil(rows.length / itemsPerPage);
-  const currentRows = rows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  const columns = [
-    { key: 'tenant', label: 'المستأجر' },
-    { key: 'insurance', label: 'مبلغ التأمين الأصلي' },
-    { key: 'refund', label: 'المبلغ المُسترَد' },
-    { key: 'date', label: 'تاريخ الاسترداد' },
-    { key: 'status', label: 'الحالة', className: 'px-6 py-4 text-center' },
-  ];
-
   const tenants = ['أحمد محمد', 'ياسر علي', 'خالد عبدالله', 'سالم سعيد', 'مؤسسة السلام', 'شركة البناء', 'علي صالح'];
   const insurances = ['100,000', '50,000', '30,000', '150,000', '80,000', '120,000', '45,000'];
   const refunds = ['100,000', '50,000', '25,000', '150,000', '80,000', '110,000', '45,000'];
@@ -28,8 +22,41 @@ export default function RefundsTab() {
     { label: 'خصم جزئي', color: 'info' },
   ];
 
+  // Dummy filter logic
+  const filteredRows = rows.filter((i) => {
+    const tenantName = tenants[i - 1];
+    if (search && !tenantName.includes(search)) return false;
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredRows.length / itemsPerPage);
+  const currentRows = filteredRows.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);
+
+  const columns = [
+    { key: 'tenant', label: 'المستأجر' },
+    { key: 'insurance', label: 'مبلغ التأمين الأصلي' },
+    { key: 'refund', label: 'المبلغ المُسترَد' },
+    { key: 'date', label: 'تاريخ الاسترداد' },
+    { key: 'status', label: 'الحالة', className: 'px-6 py-4 text-center' },
+  ];
+
   return (
     <div className="animate-in fade-in duration-300">
+      <div className="p-4 border-b border-brand-border bg-white">
+        <FilterBar
+          searchPlaceholder="بحث باسم المستأجر..."
+          searchValue={search}
+          onSearchChange={(e) => setSearch(e.target.value)}
+          filters={[
+            { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'refunded', label: 'تم الاسترداد' }, { value: 'processing', label: 'قيد المعالجة' }, { value: 'partial', label: 'خصم جزئي' }] },
+          ]}
+        />
+      </div>
+      {currentRows.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentRows}
@@ -45,6 +72,7 @@ export default function RefundsTab() {
               </tr>
         )}
       />
+      )}
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />

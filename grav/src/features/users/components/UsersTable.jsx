@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { Eye, AlertTriangle, PauseCircle, Ban } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Eye, AlertTriangle, PauseCircle, Ban, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Pagination from '../../../components/ui/Pagination';
 import Table from '../../../components/ui/Table';
+import EmptyState from '../../../components/ui/EmptyState';
 
 export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,6 +12,8 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
 
   const totalPages = Math.ceil((users?.length || 0) / itemsPerPage);
   const currentData = users?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
+  useEffect(() => { setCurrentPage(1); }, [users]);
 
   const columns = [
     { key: 'user', label: 'المستخدم' },
@@ -25,6 +28,9 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
 
   return (
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentData}
@@ -71,6 +77,7 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
               </tr>
         )}
       />
+      )}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
           <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, users?.length || 0)} من {users?.length || 0} مستخدم</span>

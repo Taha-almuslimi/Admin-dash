@@ -4,6 +4,7 @@ import {
   Home, Users, Truck, ShoppingCart, AlertTriangle,
   DollarSign, Flag, BarChart2, Star, Clock, Settings
 } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
 import Sidebar from './Sidebar';
 import Header from './Header';
 
@@ -28,6 +29,29 @@ export default function AdminLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-brand-content font-cairo text-brand-text-primary" dir="rtl">
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            fontFamily: 'Cairo, sans-serif',
+            borderRadius: '12px',
+            padding: '12px 20px',
+            fontSize: '14px',
+            fontWeight: '600',
+            boxShadow: '0 8px 30px rgba(0,0,0,0.12)',
+          },
+          success: {
+            style: { background: '#f0fdf4', color: '#15803d', border: '1px solid #bbf7d0' },
+            iconTheme: { primary: '#16a34a', secondary: '#f0fdf4' },
+          },
+          error: {
+            style: { background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca' },
+            iconTheme: { primary: '#dc2626', secondary: '#fef2f2' },
+          },
+        }}
+      />
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"

@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { Star, Eye, Trash2, Flag } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Star, Eye, Trash2, Flag, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
+import EmptyState from '../../../components/ui/EmptyState';
 
 const renderStars = (rating) => {
   return Array(5).fill(0).map((_, i) => (
@@ -18,6 +19,8 @@ export default function ReviewsTable({ reviews, onOpenDrawer }) {
   const totalPages = Math.ceil((reviews?.length || 0) / itemsPerPage);
   const currentData = reviews?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
 
+  useEffect(() => { setCurrentPage(1); }, [reviews]);
+
   const columns = [
     { key: 'id', label: '#' },
     { key: 'rater', label: 'المُقيِّم' },
@@ -31,6 +34,9 @@ export default function ReviewsTable({ reviews, onOpenDrawer }) {
 
   return (
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentData}
@@ -79,6 +85,7 @@ export default function ReviewsTable({ reviews, onOpenDrawer }) {
               </tr>
         )}
       />
+      )}
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
           <Pagination 

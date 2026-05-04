@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import EquipmentFilterBar from './components/EquipmentFilterBar';
+import { useState, useMemo } from 'react';
+import { Grid, List as ListIcon } from 'lucide-react';
+import FilterBar from '../../components/ui/FilterBar';
 import EquipmentGrid from './components/EquipmentGrid';
 import EquipmentList from './components/EquipmentList';
 import EquipmentDrawer from './components/EquipmentDrawer';
@@ -15,6 +16,21 @@ export default function EquipmentPage() {
   const [equipment, setEquipment] = useState(equipmentData);
   const [itemToHide, setItemToHide] = useState(null);
   const drawer = useDrawer();
+
+  // Filter state
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+
+  const filteredEquipment = useMemo(() => {
+    return equipment.filter((eq) => {
+      const q = search.toLowerCase();
+      const matchesSearch = !q || eq.name.includes(q) || eq.owner.includes(q);
+      const matchesStatus = !statusFilter || eq.statusKey === statusFilter;
+      const matchesCategory = !categoryFilter || eq.categoryKey === categoryFilter;
+      return matchesSearch && matchesStatus && matchesCategory;
+    });
+  }, [search, statusFilter, categoryFilter, equipment]);
 
   const openDrawer = (eq) => {
     setCurrentImageIndex(0);
@@ -42,11 +58,37 @@ export default function EquipmentPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 relative min-w-0">
-      <EquipmentFilterBar viewMode={viewMode} setViewMode={setViewMode} />
+      <FilterBar
+        searchPlaceholder="بحث عن معدة..."
+        searchValue={search}
+        onSearchChange={(e) => setSearch(e.target.value)}
+        filters={[
+          { key: 'category', placeholder: 'الفئة: الكل', value: categoryFilter, onChange: (e) => setCategoryFilter(e.target.value), options: [{ value: 'build', label: 'بناء' }, { value: 'heavy', label: 'معدات ثقيلة' }, { value: 'power', label: 'طاقة' }] },
+          { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'active', label: 'نشط' }, { value: 'hidden', label: 'مخفي' }] },
+        ]}
+        extraActions={
+          <div className="flex items-center space-x-2 space-x-reverse bg-brand-content rounded-lg p-1 border border-brand-border">
+            <Button 
+              unstyled
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-brand-primary' : 'text-brand-text-muted hover:text-brand-text-primary'}`}
+            >
+              <Grid size={18} />
+            </Button>
+            <Button 
+              unstyled
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 rounded-md transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-brand-primary' : 'text-brand-text-muted hover:text-brand-text-primary'}`}
+            >
+              <ListIcon size={18} />
+            </Button>
+          </div>
+        }
+      />
       {viewMode === 'grid' ? (
-        <EquipmentGrid equipment={equipment} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
+        <EquipmentGrid equipment={filteredEquipment} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
       ) : (
-        <EquipmentList equipment={equipment} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
+        <EquipmentList equipment={filteredEquipment} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
       )}
       <EquipmentDrawer
         isOpen={drawer.isOpen}

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
-import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
+import EmptyState from '../../../components/ui/EmptyState';
+import { Search } from 'lucide-react';
 
 export default function DisputesTable({ disputes, onOpenReview }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,6 +12,8 @@ export default function DisputesTable({ disputes, onOpenReview }) {
 
   const totalPages = Math.ceil((disputes?.length || 0) / itemsPerPage);
   const currentData = disputes?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
+  useEffect(() => { setCurrentPage(1); }, [disputes]);
 
   const columns = [
     { key: 'id', label: 'ID' },
@@ -25,12 +28,9 @@ export default function DisputesTable({ disputes, onOpenReview }) {
 
   return (
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
-      <div className="p-4 border-b border-brand-border bg-brand-content/50 flex justify-between items-center">
-        <h3 className="text-lg font-bold text-brand-text-primary">قائمة النزاعات</h3>
-        <div className="flex space-x-2 space-x-reverse">
-          <Select className="border border-brand-border bg-white rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-brand-primary" placeholder="الحالة: الكل" options={[{ value: 'open', label: 'مفتوحة' }, { value: 'review', label: 'قيد المراجعة' }]} />
-        </div>
-      </div>
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentData}
@@ -59,6 +59,7 @@ export default function DisputesTable({ disputes, onOpenReview }) {
               </tr>
         )}
       />
+      )}
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
           <Pagination 

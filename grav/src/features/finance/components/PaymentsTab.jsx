@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { Calendar, StopCircle } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
-import SearchInput from '../../../components/ui/SearchInput';
-import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
 import Modal from '../../../components/ui/Modal';
 import Pagination from '../../../components/ui/Pagination';
+import FilterBar from '../../../components/ui/FilterBar';
 
 export default function PaymentsTab() {
   const [selectedTx, setSelectedTx] = useState(null);
   const [dateFilter, setDateFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
   const rows = [1, 2, 3, 4, 5, 6, 7];
@@ -31,18 +32,21 @@ export default function PaymentsTab() {
 
   return (
     <div className="animate-in fade-in duration-300">
-      <div className="p-4 border-b border-brand-border bg-white flex flex-wrap gap-4 items-center">
-        <SearchInput placeholder="بحث..." className="flex-1 min-w-[200px]" inputClassName="w-full pl-4 pr-10 py-2 rounded-lg border border-brand-border bg-brand-content focus:outline-none focus:border-brand-primary text-sm" />
-        <div className="relative flex items-center space-x-2 space-x-reverse border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm text-brand-text-muted hover:border-brand-primary transition-colors">
-          <Calendar size={16} />
-          <input
-            type="date"
-            value={dateFilter}
-            onChange={(e) => { setDateFilter(e.target.value); setCurrentPage(1); }}
-            className="bg-transparent focus:outline-none text-brand-text-primary cursor-pointer"
-          />
-        </div>
-        <Select placeholder="حالة الدفع: الكل" options={[{ value: 'paid', label: 'مكتمل' }, { value: 'pending', label: 'معلق' }]} />
+      <div className="p-4 border-b border-brand-border bg-white">
+        <FilterBar
+          searchPlaceholder="بحث..."
+          searchValue={search}
+          onSearchChange={(e) => setSearch(e.target.value)}
+          filters={[
+            { key: 'status', placeholder: 'حالة الدفع: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'paid', label: 'مكتمل' }, { value: 'pending', label: 'معلق' }] },
+          ]}
+          extraActions={
+            <div className="relative flex items-center space-x-2 space-x-reverse border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm text-brand-text-muted hover:border-brand-primary transition-colors">
+              <Calendar size={16} />
+              <input type="date" value={dateFilter} onChange={(e) => { setDateFilter(e.target.value); setCurrentPage(1); }} className="bg-transparent focus:outline-none text-brand-text-primary cursor-pointer" />
+            </div>
+          }
+        />
       </div>
       
       <Table

@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { Eye, Edit, EyeOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Eye, Edit, EyeOff, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
+import EmptyState from '../../../components/ui/EmptyState';
 
 export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,6 +12,8 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
 
   const totalPages = Math.ceil((equipment?.length || 0) / itemsPerPage);
   const currentData = equipment?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
+
+  useEffect(() => { setCurrentPage(1); }, [equipment]);
 
   const columns = [
     { key: 'equipment', label: 'المعدة' },
@@ -23,6 +26,9 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
 
   return (
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <Table
         columns={columns}
         data={currentData}
@@ -64,6 +70,7 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
         )}
         wrapperClassName=""
       />
+      )}
       {totalPages > 1 && (
         <div className="px-6 py-4 border-t border-brand-border bg-brand-content text-sm text-brand-text-muted flex justify-between items-center">
           <span>عرض {((currentPage - 1) * itemsPerPage) + 1} إلى {Math.min(currentPage * itemsPerPage, equipment?.length || 0)} من {equipment?.length || 0} معدة</span>

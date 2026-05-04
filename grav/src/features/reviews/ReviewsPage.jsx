@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import ReviewsFilterBar from './components/ReviewsFilterBar';
+import { useState, useMemo } from 'react';
+import FilterBar from '../../components/ui/FilterBar';
 import ReviewsTable from './components/ReviewsTable';
 import ReviewDrawer from './components/ReviewDrawer';
 import RentalDrawer from '../rentals/components/RentalDrawer';
@@ -11,6 +11,23 @@ export default function ReviewsPage() {
   const drawer = useDrawer();
   const rentalDrawer = useDrawer();
   const [reviews, setReviews] = useState(reviewsData);
+
+  // Filter state
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [ratingFilter, setRatingFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+
+  const filteredReviews = useMemo(() => {
+    return reviews.filter((r) => {
+      const q = search.toLowerCase();
+      const matchesSearch = !q || r.author.toLowerCase().includes(q) || r.target.toLowerCase().includes(q);
+      const matchesType = !typeFilter || r.typeKey === typeFilter;
+      const matchesStatus = !statusFilter || r.statusKey === statusFilter;
+      const matchesRating = !ratingFilter || r.rating.toString() === ratingFilter;
+      return matchesSearch && matchesType && matchesStatus && matchesRating;
+    });
+  }, [search, typeFilter, statusFilter, ratingFilter, reviews]);
 
   const handleDeleteReview = (reviewId) => {
     setReviews(prev => prev.filter(r => r.id !== reviewId));
@@ -27,8 +44,17 @@ export default function ReviewsPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 relative">
-      <ReviewsFilterBar />
-      <ReviewsTable reviews={reviews} onOpenDrawer={drawer.open} />
+      <FilterBar
+        searchPlaceholder="بحث في التقييمات..."
+        searchValue={search}
+        onSearchChange={(e) => setSearch(e.target.value)}
+        filters={[
+          { key: 'type', placeholder: 'النوع: الكل', value: typeFilter, onChange: (e) => setTypeFilter(e.target.value), options: [{ value: 'tenant', label: 'مستأجر' }, { value: 'owner', label: 'مؤجر' }] },
+          { key: 'rating', placeholder: 'التقييم: الكل', value: ratingFilter, onChange: (e) => setRatingFilter(e.target.value), options: [{ value: '5', label: '⭐⭐⭐⭐⭐' }, { value: '4', label: '⭐⭐⭐⭐' }, { value: '3', label: '⭐⭐⭐' }, { value: '2', label: '⭐⭐' }, { value: '1', label: '⭐' }] },
+          { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'active', label: 'نشط' }, { value: 'deleted', label: 'محذوف' }] },
+        ]}
+      />
+      <ReviewsTable reviews={filteredReviews} onOpenDrawer={drawer.open} />
       <ReviewDrawer 
         isOpen={drawer.isOpen} 
         review={drawer.selectedItem} 

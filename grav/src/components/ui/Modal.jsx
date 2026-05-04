@@ -14,8 +14,8 @@ export default function Modal({
   if (!isOpen) return null;
 
   return (
-    <div className={overlayClassName}>
-      <div className={panelClassName}>
+    <div className={overlayClassName} onClick={onClose}>
+      <div className={panelClassName} onClick={(e) => e.stopPropagation()}>
         {header || (
           <div className="p-6 border-b border-brand-border flex justify-between items-center">
             <h3 className="text-lg font-bold text-brand-text-primary">{title}</h3>
@@ -30,3 +30,4 @@ export default function Modal({
     </div>
   );
 }
+

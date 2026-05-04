@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { MapPin, Tag, User, Eye, Edit, EyeOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { MapPin, Tag, User, Eye, Edit, EyeOff, Search } from 'lucide-react';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Pagination from '../../../components/ui/Pagination';
+import EmptyState from '../../../components/ui/EmptyState';
 
 export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,8 +12,13 @@ export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
   const totalPages = Math.ceil((equipment?.length || 0) / itemsPerPage);
   const currentData = equipment?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) || [];
 
+  useEffect(() => { setCurrentPage(1); }, [equipment]);
+
   return (
     <div>
+      {currentData.length === 0 ? (
+        <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-6 pb-8">
         {currentData.map(item => (
           <div 
@@ -111,6 +117,7 @@ export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
           </div>
         ))}
       </div>
+      )}
       {totalPages > 1 && (
         <div className="flex justify-center pb-4">
           <Pagination 

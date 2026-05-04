@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import UsersFilterBar from './components/UsersFilterBar';
+import { useState, useMemo } from 'react';
+import FilterBar from '../../components/ui/FilterBar';
 import UsersTable from './components/UsersTable';
 import UserDrawer from './components/UserDrawer';
 import UserActionModal from './components/UserActionModal';
@@ -12,6 +12,23 @@ export default function UsersPage() {
   const modal = useModal();
   const [actionType, setActionType] = useState('warn');
 
+  // Filter state
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [govFilter, setGovFilter] = useState('');
+
+  const filteredUsers = useMemo(() => {
+    return usersData.filter((user) => {
+      const q = search.toLowerCase();
+      const matchesSearch = !q || user.name.toLowerCase().includes(q) || user.phone.includes(q);
+      const matchesType = !typeFilter || user.typeKey === typeFilter;
+      const matchesStatus = !statusFilter || user.statusKey === statusFilter;
+      const matchesGov = !govFilter || user.govKey === govFilter;
+      return matchesSearch && matchesType && matchesStatus && matchesGov;
+    });
+  }, [search, typeFilter, statusFilter, govFilter]);
+
   const openActionModal = (user, type) => {
     modal.open(user);
     setActionType(type);
@@ -20,8 +37,19 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 relative">
-      <UsersFilterBar />
-      <UsersTable users={usersData} onOpenDrawer={drawer.open} onOpenActionModal={openActionModal} />
+      <FilterBar
+        searchPlaceholder="بحث باسم أو جوال..."
+        searchValue={search}
+        onSearchChange={(e) => setSearch(e.target.value)}
+        filters={[
+          { key: 'type', placeholder: 'النوع: الكل', value: typeFilter, onChange: (e) => setTypeFilter(e.target.value), options: [{ value: 'tenant', label: 'مستأجر' }, { value: 'owner', label: 'مؤجر' }] },
+          { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'active', label: 'نشط' }, { value: 'suspended', label: 'موقوف' }, { value: 'banned', label: 'محظور' }] },
+          { key: 'gov', placeholder: 'المحافظة: الكل', value: govFilter, onChange: (e) => setGovFilter(e.target.value), options: [{ value: 'sanaa', label: 'صنعاء' }, { value: 'aden', label: 'عدن' }, { value: 'taiz', label: 'تعز' }, { value: 'hadramout', label: 'حضرموت' }] },
+        ]}
+        onExport={() => {}}
+        exportLabel="تصدير CSV"
+      />
+      <UsersTable users={filteredUsers} onOpenDrawer={drawer.open} onOpenActionModal={openActionModal} />
       <UserDrawer isOpen={drawer.isOpen} user={drawer.selectedItem} onClose={drawer.close} onOpenActionModal={openActionModal} />
       <UserActionModal isOpen={modal.isOpen} user={modal.selectedItem} actionType={actionType} setActionType={setActionType} onClose={modal.close} />
     </div>
