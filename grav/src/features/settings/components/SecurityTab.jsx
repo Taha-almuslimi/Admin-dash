@@ -1,4 +1,6 @@
 import { Smartphone, Clock, Monitor, LogOut } from 'lucide-react';
+import Button from '../../../components/ui/Button';
+import Select from '../../../components/ui/Select';
 
 export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
   return (
@@ -19,12 +21,13 @@ export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
                 <p className="text-sm text-brand-text-muted mt-1">إضافة طبقة أمان إضافية لحسابك باستخدام تطبيق مصادقة.</p>
               </div>
             </div>
-            <button 
+            <Button 
+              unstyled
               onClick={() => setMfaEnabled(!mfaEnabled)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${mfaEnabled ? 'bg-brand-success' : 'bg-gray-300'}`}
             >
               <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${mfaEnabled ? '-translate-x-6' : '-translate-x-1'}`} />
-            </button>
+            </Button>
           </div>
 
           <div className="flex items-center justify-between">
@@ -37,11 +40,7 @@ export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
                 <p className="text-sm text-brand-text-muted mt-1">تحديد المدة التي يتم بعدها تسجيل الخروج تلقائياً عند عدم النشاط.</p>
               </div>
             </div>
-            <select className="border border-brand-border bg-brand-content rounded-lg px-4 py-2 font-bold text-sm focus:outline-none focus:border-brand-primary">
-              <option value="30m">30 دقيقة</option>
-              <option value="1h">1 ساعة</option>
-              <option value="8h">8 ساعات</option>
-            </select>
+            <Select className="border border-brand-border bg-brand-content rounded-lg px-4 py-2 font-bold text-sm focus:outline-none focus:border-brand-primary" options={[{ value: '30m', label: '30 دقيقة' }, { value: '1h', label: '1 ساعة' }, { value: '8h', label: '8 ساعات' }]} />
           </div>
 
         </div>
@@ -70,9 +69,9 @@ export default function SecurityTab({ mfaEnabled, setMfaEnabled, sessions }) {
                 </div>
               </div>
               {!session.current && (
-                <button className="flex items-center space-x-1 space-x-reverse px-3 py-1.5 text-xs font-bold text-brand-danger bg-brand-danger/10 hover:bg-brand-danger hover:text-white rounded-lg transition-colors border border-brand-danger/20">
+                <Button unstyled className="flex items-center space-x-1 space-x-reverse px-3 py-1.5 text-xs font-bold text-brand-danger bg-brand-danger/10 hover:bg-brand-danger hover:text-white rounded-lg transition-colors border border-brand-danger/20">
                   <LogOut size={14} /> <span>إنهاء الجلسة</span>
-                </button>
+                </Button>
               )}
             </div>
           ))}

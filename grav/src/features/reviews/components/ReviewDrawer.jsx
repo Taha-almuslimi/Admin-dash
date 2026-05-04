@@ -1,4 +1,6 @@
-import { Star, X, ChevronLeft, CheckCircle, Trash2, Flag } from 'lucide-react';
+import { Star, ChevronLeft, CheckCircle, Trash2, Flag } from 'lucide-react';
+import Button from '../../../components/ui/Button';
+import Drawer from '../../../components/ui/Drawer';
 
 const renderStars = (rating) => {
   return Array(5).fill(0).map((_, i) => (
@@ -8,22 +10,27 @@ const renderStars = (rating) => {
 
 export default function ReviewDrawer({ isOpen, review, onClose }) {
   return (
-    <>
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 transition-opacity" onClick={onClose} />
+    <Drawer
+      isOpen={isOpen}
+      onClose={onClose}
+      title="تفاصيل التقييم"
+      bodyClassName="flex-1 overflow-y-auto p-6 space-y-6"
+      footer={review && (
+        <div className="p-4 border-t border-brand-border bg-white flex space-x-3 space-x-reverse">
+          <Button unstyled className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-success/10 text-brand-success hover:bg-brand-success hover:text-white transition-colors border border-brand-success/20 flex items-center justify-center">
+            <CheckCircle size={18} className="ml-2" /> إبقاء التقييم
+          </Button>
+          <Button unstyled className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-danger/10 text-brand-danger hover:bg-brand-danger hover:text-white transition-colors border border-brand-danger/20 flex items-center justify-center">
+            <Trash2 size={18} className="ml-2" /> حذف
+          </Button>
+          <Button unstyled className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-warning/10 text-brand-warning hover:bg-brand-warning hover:text-white transition-colors border border-brand-warning/20 flex items-center justify-center">
+            <Flag size={18} className="ml-2" /> إبلاغ
+          </Button>
+        </div>
       )}
-
-      <div className={`fixed top-0 bottom-0 right-0 w-full md:w-[480px] bg-brand-card shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+    >
         {review && (
           <>
-            <div className="flex items-center justify-between p-6 border-b border-brand-border bg-brand-content/50">
-              <h2 className="text-xl font-bold text-brand-text-primary">تفاصيل التقييم</h2>
-              <button onClick={onClose} className="p-2 text-brand-text-muted hover:text-brand-danger rounded-full hover:bg-brand-danger/10 transition-colors">
-                <X size={24} />
-              </button>
-            </div>
-            
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
               
               <div className="flex items-center justify-between bg-white border border-brand-border p-4 rounded-xl shadow-sm">
                 <div className="text-center">
@@ -63,23 +70,8 @@ export default function ReviewDrawer({ isOpen, review, onClose }) {
                   <ChevronLeft size={20} className="text-brand-text-muted group-hover:text-brand-primary transition-colors" />
                 </div>
               </div>
-
-            </div>
-
-            <div className="p-4 border-t border-brand-border bg-white flex space-x-3 space-x-reverse">
-              <button className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-success/10 text-brand-success hover:bg-brand-success hover:text-white transition-colors border border-brand-success/20 flex items-center justify-center">
-                <CheckCircle size={18} className="ml-2" /> إبقاء التقييم
-              </button>
-              <button className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-danger/10 text-brand-danger hover:bg-brand-danger hover:text-white transition-colors border border-brand-danger/20 flex items-center justify-center">
-                <Trash2 size={18} className="ml-2" /> حذف
-              </button>
-              <button className="flex-1 py-2.5 rounded-lg font-bold text-sm bg-brand-warning/10 text-brand-warning hover:bg-brand-warning hover:text-white transition-colors border border-brand-warning/20 flex items-center justify-center">
-                <Flag size={18} className="ml-2" /> إبلاغ
-              </button>
-            </div>
           </>
         )}
-      </div>
-    </>
+    </Drawer>
   );
 }

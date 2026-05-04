@@ -1,4 +1,6 @@
 import { MapPin, Tag, User, Eye, Edit, Trash2 } from 'lucide-react';
+import Badge from '../../../components/ui/Badge';
+import Button from '../../../components/ui/Button';
 
 export default function EquipmentGrid({ equipment, onOpenDrawer }) {
   return (
@@ -17,11 +19,11 @@ export default function EquipmentGrid({ equipment, onOpenDrawer }) {
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
             
             <div className="absolute top-3 left-3">
-              <span className={`px-2.5 py-1 text-[10px] font-bold rounded-lg shadow-sm backdrop-blur-md text-white border border-white/20 ${
-                item.statusColor === 'success' ? 'bg-brand-success/80' : 'bg-brand-warning/80'
-              }`}>
-                {item.status}
-              </span>
+                  <Badge unstyled className={`px-2.5 py-1 text-[10px] font-bold rounded-lg shadow-sm backdrop-blur-md text-white border border-white/20 ${
+                    item.statusColor === 'success' ? 'bg-brand-success/80' : 'bg-brand-warning/80'
+                  }`}>
+                    {item.status}
+                  </Badge>
             </div>
             
             <div className="absolute bottom-3 right-3">
@@ -71,26 +73,29 @@ export default function EquipmentGrid({ equipment, onOpenDrawer }) {
 
             <div className="pt-4 mt-5 border-t border-brand-border/60 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <button 
+                <Button
+                  unstyled
                   onClick={() => onOpenDrawer(item)} 
                   className="p-2 text-brand-info hover:bg-brand-info/10 rounded-lg transition-all" 
                   title="عرض"
                 >
                   <Eye size={20} />
-                </button>
-                <button 
+                </Button>
+                <Button
+                  unstyled
                   className="p-2 text-brand-primary hover:bg-brand-primary/10 rounded-lg transition-all" 
                   title="تعديل"
                 >
                   <Edit size={20} />
-                </button>
+                </Button>
               </div>
-              <button 
+              <Button
+                unstyled
                 className="p-2 text-brand-danger hover:bg-brand-danger/10 rounded-lg transition-all" 
                 title="حذف"
               >
                 <Trash2 size={20} />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

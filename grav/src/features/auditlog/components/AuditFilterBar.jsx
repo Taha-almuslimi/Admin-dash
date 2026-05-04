@@ -1,32 +1,16 @@
-import { Search, Download, Calendar } from 'lucide-react';
+import { Download, Calendar } from 'lucide-react';
+import Button from '../../../components/ui/Button';
+import SearchInput from '../../../components/ui/SearchInput';
+import Select from '../../../components/ui/Select';
 
 export default function AuditFilterBar() {
   return (
     <div className="bg-brand-card p-4 rounded-xl shadow-sm border border-brand-border flex flex-wrap gap-4 items-center justify-between">
       <div className="flex flex-wrap gap-4 items-center flex-1">
-        <div className="relative w-full md:w-64">
-          <input 
-            type="text" 
-            placeholder="بحث بالحدث أو التفاصيل..." 
-            className="w-full pl-4 pr-10 py-2 rounded-lg border border-brand-border bg-brand-content focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary text-sm"
-          />
-          <Search className="absolute right-3 top-2.5 text-brand-text-muted" size={18} />
-        </div>
+        <SearchInput placeholder="بحث بالحدث أو التفاصيل..." className="w-full md:w-64" />
         
-        <select className="border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-brand-primary">
-          <option value="">المسؤول: الكل</option>
-          <option value="ahmed">أحمد علي</option>
-          <option value="sara">سارة محمد</option>
-          <option value="khaled">خالد عمر</option>
-        </select>
-        <select className="border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-brand-primary">
-          <option value="">نوع الحدث: الكل</option>
-          <option value="ban">حظر/تعليق مستخدم</option>
-          <option value="delete">حذف محتوى</option>
-          <option value="dispute">قرار نزاع</option>
-          <option value="edit">تعديل بيانات</option>
-          <option value="finance">إجراء مالي</option>
-        </select>
+        <Select placeholder="المسؤول: الكل" options={[{ value: 'ahmed', label: 'أحمد علي' }, { value: 'sara', label: 'سارة محمد' }, { value: 'khaled', label: 'خالد عمر' }]} />
+        <Select placeholder="نوع الحدث: الكل" options={[{ value: 'ban', label: 'حظر/تعليق مستخدم' }, { value: 'delete', label: 'حذف محتوى' }, { value: 'dispute', label: 'قرار نزاع' }, { value: 'edit', label: 'تعديل بيانات' }, { value: 'finance', label: 'إجراء مالي' }]} />
 
         <div className="flex items-center space-x-2 space-x-reverse border border-brand-border bg-brand-content rounded-lg px-4 py-2 text-sm text-brand-text-muted cursor-pointer hover:border-brand-primary transition-colors">
           <Calendar size={16} />
@@ -34,10 +18,10 @@ export default function AuditFilterBar() {
         </div>
       </div>
       
-      <button className="flex items-center space-x-2 space-x-reverse px-4 py-2 bg-brand-primary text-white border border-brand-primary rounded-lg text-sm font-bold shadow-sm hover:bg-brand-primary/90 transition-colors">
+      <Button unstyled className="flex items-center space-x-2 space-x-reverse px-4 py-2 bg-brand-primary text-white border border-brand-primary rounded-lg text-sm font-bold shadow-sm hover:bg-brand-primary/90 transition-colors">
         <Download size={16} />
         <span>تصدير السجل</span>
-      </button>
+      </Button>
     </div>
   );
 }

@@ -1,20 +1,45 @@
 import { AlertTriangle, PauseCircle, Ban, AlertOctagon, X } from 'lucide-react';
+import Button from '../../../components/ui/Button';
+import Modal from '../../../components/ui/Modal';
 
 export default function ComplaintModal({ isOpen, actionType, setActionType, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[60] p-4">
-      <div className="bg-brand-card rounded-xl w-full max-w-md shadow-2xl border border-brand-border animate-in zoom-in-95 duration-200">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      header={
         <div className="p-6 border-b border-brand-border flex justify-between items-center">
           <h3 className="text-lg font-bold text-brand-text-primary">
             معالجة البلاغ <span className="text-brand-text-muted text-sm font-normal ml-2" dir="ltr">#RPT-001</span>
           </h3>
-          <button onClick={onClose} className="text-brand-text-muted hover:text-brand-danger">
+          <Button unstyled onClick={onClose} className="text-brand-text-muted hover:text-brand-danger">
             <X size={20} />
-          </button>
+          </Button>
         </div>
-        
+      }
+      footer={
+        <div className="p-4 border-t border-brand-border bg-white rounded-b-xl space-y-3 flex flex-col">
+          <Button unstyled className="w-full py-2.5 text-brand-danger font-bold text-sm bg-brand-danger/5 hover:bg-brand-danger/10 border border-brand-danger/20 rounded-lg transition-colors flex items-center justify-center">
+            <AlertOctagon size={16} className="ml-2" /> الإبلاغ للجهات المختصة
+          </Button>
+          
+          <div className="flex space-x-3 space-x-reverse w-full">
+            <Button 
+              unstyled
+              onClick={onClose}
+              className="flex-1 py-2.5 text-brand-text-primary font-bold text-sm border border-brand-border hover:bg-brand-content rounded-lg transition-colors"
+            >
+              إلغاء
+            </Button>
+            <Button unstyled className="flex-1 py-2.5 text-white font-bold text-sm bg-brand-primary hover:bg-brand-primary/90 rounded-lg transition-colors shadow-sm">
+              حفظ الإجراء
+            </Button>
+          </div>
+        </div>
+      }
+    >
         <div className="p-6 space-y-5 bg-brand-content/50">
           
           <div className="bg-white p-4 rounded-xl border border-brand-border space-y-3">
@@ -72,24 +97,6 @@ export default function ComplaintModal({ isOpen, actionType, setActionType, onCl
 
         </div>
 
-        <div className="p-4 border-t border-brand-border bg-white rounded-b-xl space-y-3 flex flex-col">
-          <button className="w-full py-2.5 text-brand-danger font-bold text-sm bg-brand-danger/5 hover:bg-brand-danger/10 border border-brand-danger/20 rounded-lg transition-colors flex items-center justify-center">
-            <AlertOctagon size={16} className="ml-2" /> الإبلاغ للجهات المختصة
-          </button>
-          
-          <div className="flex space-x-3 space-x-reverse w-full">
-            <button 
-              onClick={onClose}
-              className="flex-1 py-2.5 text-brand-text-primary font-bold text-sm border border-brand-border hover:bg-brand-content rounded-lg transition-colors"
-            >
-              إلغاء
-            </button>
-            <button className="flex-1 py-2.5 text-white font-bold text-sm bg-brand-primary hover:bg-brand-primary/90 rounded-lg transition-colors shadow-sm">
-              حفظ الإجراء
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

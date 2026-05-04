@@ -18,13 +18,18 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   className = '',
+  unstyled = false,
   type = 'button',
   ...props
 }) {
+  const classes = unstyled
+    ? className
+    : `inline-flex items-center justify-center rounded-lg border font-bold transition-colors ${variants[variant]} ${sizes[size]} ${className}`;
+
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center rounded-lg border font-bold transition-colors ${variants[variant]} ${sizes[size]} ${className}`}
+      className={classes}
       {...props}
     >
       {children}

@@ -1,27 +1,29 @@
+import Badge from '../../../components/ui/Badge';
+import Table from '../../../components/ui/Table';
+
 export default function AuditTable({ auditData }) {
+  const columns = [
+    { key: 'time', label: 'الوقت' },
+    { key: 'admin', label: 'المسؤول' },
+    { key: 'role', label: 'الدور' },
+    { key: 'event', label: 'الحدث' },
+    { key: 'details', label: 'التفاصيل', className: 'px-6 py-4 w-2/5' },
+    { key: 'ip', label: 'الـ IP', className: 'px-6 py-4 text-center' },
+  ];
+
   return (
     <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-right text-sm">
-          <thead className="bg-brand-content text-brand-text-muted font-medium border-b border-brand-border">
-            <tr>
-              <th className="px-6 py-4">الوقت</th>
-              <th className="px-6 py-4">المسؤول</th>
-              <th className="px-6 py-4">الدور</th>
-              <th className="px-6 py-4">الحدث</th>
-              <th className="px-6 py-4 w-2/5">التفاصيل</th>
-              <th className="px-6 py-4 text-center">الـ IP</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-brand-border">
-            {auditData.map((log) => (
-              <tr key={log.id} className="hover:bg-brand-content/50 transition-colors">
+      <Table
+        columns={columns}
+        data={auditData}
+        renderRow={(log) => (
+          <tr key={log.id} className="hover:bg-brand-content/50 transition-colors">
                 <td className="px-6 py-4 font-bold text-brand-text-muted" dir="ltr">{log.time}</td>
                 <td className="px-6 py-4 font-bold text-brand-text-primary">{log.admin}</td>
                 <td className="px-6 py-4">
-                  <span className={`px-2.5 py-1 rounded-md text-xs font-bold bg-brand-${log.roleColor}/10 text-brand-${log.roleColor}`}>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold bg-brand-${log.roleColor}/10 text-brand-${log.roleColor}`}>
                     {log.role}
-                  </span>
+                  </Badge>
                 </td>
                 <td className="px-6 py-4">
                   <span className="flex items-center font-bold">
@@ -38,10 +40,8 @@ export default function AuditTable({ auditData }) {
                 <td className="px-6 py-4 text-brand-text-primary">{log.details}</td>
                 <td className="px-6 py-4 text-center font-medium text-brand-text-muted" dir="ltr">{log.ip}</td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+        )}
+      />
     </div>
   );
 }

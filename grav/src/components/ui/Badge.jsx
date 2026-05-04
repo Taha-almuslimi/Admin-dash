@@ -6,9 +6,9 @@ const variants = {
   neutral: 'bg-brand-content text-brand-text-muted',
 };
 
-export default function Badge({ children, variant = 'neutral', className = '' }) {
+export default function Badge({ children, variant = 'neutral', className = '', unstyled = false }) {
   return (
-    <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${variants[variant]} ${className}`}>
+    <span className={unstyled ? className : `px-2.5 py-1 rounded-md text-xs font-bold ${variants[variant]} ${className}`}>
       {children}
     </span>
   );
