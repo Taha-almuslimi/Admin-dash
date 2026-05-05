@@ -9,26 +9,30 @@ import Pagination from '../../../components/ui/Pagination';
 import FilterBar from '../../../components/ui/FilterBar';
 import EmptyState from '../../../components/ui/EmptyState';
 import usePagination from '../../../hooks/usePagination';
+import { isPaginatedSource, rowsFromSource, sourceWithRows } from '../../../utils/dataSource';
 
 export default function EscrowTab({ rows = [], loading = false }) {
   const [selectedOp, setSelectedOp] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
+  const isServerPaginated = isPaginatedSource(rows);
+  const sourceRows = rowsFromSource(rows);
 
-  const filteredRows = rows?.filter((row) => {
+  const filteredRows = isServerPaginated ? sourceRows : sourceRows.filter((row) => {
     const q = search.toLowerCase();
     const matchesSearch = !q || row?.id?.toLowerCase?.().includes(q);
     const matchesStatus = !statusFilter || row?.statusKey === statusFilter;
     return matchesSearch && matchesStatus;
-  }) || [];
+  });
 
   const {
     currentPage,
     totalPages,
     setPage,
     paginatedData: currentRows,
-  } = usePagination(filteredRows, itemsPerPage);
+    links,
+  } = usePagination(sourceWithRows(rows, filteredRows), itemsPerPage);
 
   const columns = [
     { key: 'op', label: 'عملية' },
@@ -91,7 +95,7 @@ export default function EscrowTab({ rows = [], loading = false }) {
 
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} links={links} />
         </div>
       )}
 

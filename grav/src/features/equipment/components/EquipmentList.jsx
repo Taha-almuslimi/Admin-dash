@@ -17,6 +17,7 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
     to,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(equipment, itemsPerPage);
 
   const columns = [
@@ -82,6 +83,7 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
             currentPage={currentPage} 
             totalPages={totalPages} 
             onPageChange={setPage} 
+            links={links}
           />
         </div>
       )}

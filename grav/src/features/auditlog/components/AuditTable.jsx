@@ -16,6 +16,7 @@ export default function AuditTable({ auditData }) {
     to,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(auditData, itemsPerPage);
 
   const columns = [
@@ -69,6 +70,7 @@ export default function AuditTable({ auditData }) {
             currentPage={currentPage} 
             totalPages={totalPages} 
             onPageChange={setPage} 
+            links={links}
           />
         </div>
       )}

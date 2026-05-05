@@ -20,6 +20,7 @@ export default function RentalsTable({
     totalPages,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(rentals, itemsPerPage);
 
   const columns = [
@@ -73,6 +74,7 @@ export default function RentalsTable({
             currentPage={currentPage} 
             totalPages={totalPages} 
             onPageChange={setPage} 
+            links={links}
           />
         </div>
       )}

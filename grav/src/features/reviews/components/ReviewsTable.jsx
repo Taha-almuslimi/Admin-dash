@@ -27,6 +27,7 @@ export default function ReviewsTable({
     totalPages,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(reviews, itemsPerPage);
 
   const columns = [
@@ -104,6 +105,7 @@ export default function ReviewsTable({
             currentPage={currentPage} 
             totalPages={totalPages} 
             onPageChange={setPage} 
+            links={links}
           />
         </div>
       )}

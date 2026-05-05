@@ -20,6 +20,7 @@ export default function ComplaintsTable({
     totalPages,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(complaints, itemsPerPage);
 
   const columns = [
@@ -76,6 +77,7 @@ export default function ComplaintsTable({
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setPage}
+            links={links}
           />
         </div>
       )}

@@ -1,12 +1,10 @@
 import { Eye } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
-import { disputesData } from '../../../data/disputes';
+import { router } from '../../../inertia/router';
 
-export default function DisputesTable() {
-  const navigate = useNavigate();
-  const rows = disputesData.slice(0, 3);
+export default function DisputesTable({ disputes = [], loading = false }) {
+  const rows = disputes;
   const columns = [
     { key: 'id', label: '#', className: 'py-3 px-4 rounded-r-lg' },
     { key: 'tenant', label: 'المستأجر', className: 'py-3 px-4' },
@@ -22,7 +20,7 @@ export default function DisputesTable() {
         <h3 className="text-lg font-bold text-brand-text-primary">آخر النزاعات</h3>
         <button
           className="text-brand-info text-sm font-medium hover:underline"
-          onClick={() => navigate('/disputes')}
+          onClick={() => router.visit('/disputes')}
         >
           عرض الكل
         </button>
@@ -30,6 +28,7 @@ export default function DisputesTable() {
       <Table
         columns={columns}
         data={rows}
+        loading={loading}
         theadClassName="bg-brand-content text-brand-text-muted font-medium"
         renderRow={(dispute) => (
           <tr key={dispute.id} className="hover:bg-brand-content/50 transition-colors">
@@ -42,7 +41,7 @@ export default function DisputesTable() {
               <Button
                 unstyled
                 className="bg-brand-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-primary/90 transition-colors inline-flex items-center"
-                onClick={() => navigate('/disputes', { state: { disputeId: dispute.id } })}
+                onClick={() => router.visit('/disputes', { state: { disputeId: dispute.id } })}
               >
                 <Eye size={14} className="ml-1" /> مراجعة
               </Button>

@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Bell, ChevronDown, Menu, Search, LogOut, User, Settings } from 'lucide-react';
+import { router } from '../../inertia/router';
 
 export default function Header({ currentTitle, onOpenSidebar }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -43,7 +42,7 @@ export default function Header({ currentTitle, onOpenSidebar }) {
 
         <button 
           className="relative p-2 text-brand-text-primary hover:bg-brand-content rounded-full transition-colors"
-          onClick={() => navigate('/complaints', { state: { activeTab: 'notifications' } })}
+          onClick={() => router.visit('/complaints', { state: { activeTab: 'notifications' } })}
         >
           <Bell size={24} />
           <span className="absolute top-1 right-1 w-4 h-4 bg-brand-danger text-white text-[10px] flex items-center justify-center font-bold rounded-full border-2 border-white">3</span>
@@ -74,7 +73,7 @@ export default function Header({ currentTitle, onOpenSidebar }) {
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => { navigate('/settings'); setIsDropdownOpen(false); }} className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-text-primary">
+                  <button onClick={() => { router.visit('/settings'); setIsDropdownOpen(false); }} className="w-full text-right px-4 py-2 hover:bg-brand-content flex items-center gap-2 text-brand-text-primary">
                     <Settings size={16} />
                     <span>الإعدادات</span>
                   </button>

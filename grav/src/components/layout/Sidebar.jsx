@@ -1,7 +1,7 @@
-import { NavLink } from "react-router-dom";
 import { LogOut, X } from "lucide-react";
+import Link from "../../inertia/Link";
 
-export default function Sidebar({ isSidebarOpen, onClose, navItems }) {
+export default function Sidebar({ isSidebarOpen, onClose, navItems, currentPath }) {
   return (
     <aside
       className={`
@@ -31,29 +31,24 @@ export default function Sidebar({ isSidebarOpen, onClose, navItems }) {
         <ul className="space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
+            const isActive = currentPath === item.path;
             return (
               <li key={item.path} className="px-3">
-                <NavLink
-                  to={item.path}
+                <Link
+                  href={item.path}
                   onClick={onClose}
-                  className={({ isActive }) =>
-                    `flex items-center space-x-3 space-x-reverse px-4 py-2.5 rounded-lg transition-colors relative ${
-                      isActive
-                        ? "bg-brand-primary text-white"
-                        : "text-gray-300 hover:bg-brand-sidebar-hover hover:text-white"
-                    }`
-                  }
+                  className={`flex items-center space-x-3 space-x-reverse px-4 py-2.5 rounded-lg transition-colors relative ${
+                    isActive
+                      ? "bg-brand-primary text-white"
+                      : "text-gray-300 hover:bg-brand-sidebar-hover hover:text-white"
+                  }`}
                 >
-                  {({ isActive }) => (
-                    <>
-                      {isActive && (
-                        <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white rounded-r-full" />
-                      )}
-                      <Icon size={20} />
-                      <span className="font-medium">{item.label}</span>
-                    </>
+                  {isActive && (
+                    <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-white rounded-r-full" />
                   )}
-                </NavLink>
+                  <Icon size={20} />
+                  <span className="font-medium">{item.label}</span>
+                </Link>
               </li>
             );
           })}

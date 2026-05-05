@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
 import {
   Home, Users, Truck, ShoppingCart, AlertTriangle,
   DollarSign, Flag, BarChart2, Star, Clock, Settings
@@ -7,25 +6,31 @@ import {
 import { Toaster } from 'react-hot-toast';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import { adminPageContracts } from '../../contracts/adminContracts';
 
-const navItems = [
-  { path: '/overview', label: 'الرئيسية', icon: Home },
-  { path: '/users', label: 'المستخدمون', icon: Users },
-  { path: '/equipment', label: 'المعدات', icon: Truck },
-  { path: '/rentals', label: 'عمليات التأجير', icon: ShoppingCart },
-  { path: '/disputes', label: 'النزاعات', icon: AlertTriangle },
-  { path: '/finance', label: 'الإشراف المالي', icon: DollarSign },
-  { path: '/complaints', label: 'البلاغات', icon: Flag },
-  { path: '/analytics', label: 'التقارير', icon: BarChart2 },
-  { path: '/reviews', label: 'التقييمات', icon: Star },
-  { path: '/audit', label: 'سجل العمليات', icon: Clock },
-  { path: '/settings', label: 'الإعدادات', icon: Settings },
+const navConfig = [
+  { key: 'overview', label: 'الرئيسية', icon: Home },
+  { key: 'users', label: 'المستخدمون', icon: Users },
+  { key: 'equipment', label: 'المعدات', icon: Truck },
+  { key: 'rentals', label: 'عمليات التأجير', icon: ShoppingCart },
+  { key: 'disputes', label: 'النزاعات', icon: AlertTriangle },
+  { key: 'finance', label: 'الإشراف المالي', icon: DollarSign },
+  { key: 'complaints', label: 'البلاغات', icon: Flag },
+  { key: 'analytics', label: 'التقارير', icon: BarChart2 },
+  { key: 'reviews', label: 'التقييمات', icon: Star },
+  { key: 'audit', label: 'سجل العمليات', icon: Clock },
+  { key: 'settings', label: 'الإعدادات', icon: Settings },
 ];
 
-export default function AdminLayout() {
-  const location = useLocation();
+const navItems = navConfig.map((item) => ({
+  ...item,
+  path: adminPageContracts[item.key].path,
+  inertiaPage: adminPageContracts[item.key].inertiaPage,
+}));
+
+export default function AdminLayout({ children, currentPath = '/overview' }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const currentTitle = navItems.find(item => item.path === location.pathname)?.label || 'الرئيسية';
+  const currentTitle = navItems.find(item => item.path === currentPath)?.label || 'الرئيسية';
 
   return (
     <div className="flex h-screen overflow-hidden bg-brand-content font-cairo text-brand-text-primary" dir="rtl">
@@ -63,6 +68,7 @@ export default function AdminLayout() {
         isSidebarOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         navItems={navItems}
+        currentPath={currentPath}
       />
 
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
@@ -72,7 +78,7 @@ export default function AdminLayout() {
         />
 
         <div className="flex-1 overflow-y-auto p-6 scroll-smooth min-w-0">
-          <Outlet />
+          {children}
         </div>
       </main>
     </div>

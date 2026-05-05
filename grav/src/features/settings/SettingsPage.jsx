@@ -4,9 +4,12 @@ import AdminsTable from './components/AdminsTable';
 import PermissionsMatrix from './components/PermissionsMatrix';
 import SecurityTab from './components/SecurityTab';
 import Tabs from '../../components/ui/Tabs';
-import { adminsData, permissionsData, sessionsData } from '../../data/settings';
 
-export default function SettingsPage() {
+export default function SettingsPage({
+  admins = [],
+  permissions = [],
+  sessions = [],
+}) {
   const [activeTab, setActiveTab] = useState('roles');
   const [mfaEnabled, setMfaEnabled] = useState(true);
   const tabs = [
@@ -37,13 +40,13 @@ export default function SettingsPage() {
 
       {activeTab === 'roles' && (
         <div className="space-y-6 animate-in fade-in duration-300">
-          <AdminsTable admins={adminsData} />
-          <PermissionsMatrix permissions={permissionsData} />
+          <AdminsTable admins={admins} />
+          <PermissionsMatrix permissions={permissions} />
         </div>
       )}
 
       {activeTab === 'security' && (
-        <SecurityTab mfaEnabled={mfaEnabled} setMfaEnabled={setMfaEnabled} sessions={sessionsData} />
+        <SecurityTab mfaEnabled={mfaEnabled} setMfaEnabled={setMfaEnabled} sessions={sessions} />
       )}
     </div>
   );

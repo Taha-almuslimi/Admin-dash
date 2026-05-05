@@ -5,15 +5,22 @@ import LineChart from './components/LineChart';
 import DonutChart from './components/DonutChart';
 import DisputesTable from './components/DisputesTable';
 import ComplaintsTable from './components/ComplaintsTable';
-import { lineData, pieData } from '../../data/overview';
 
-export default function OverviewPage() {
+export default function OverviewPage({
+  stats = {},
+  rates = {},
+  lineData = [],
+  pieData = [],
+  disputes = [],
+  complaints = [],
+  loading = false,
+}) {
   const [chartFilter, setChartFilter] = useState('شهر');
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <KpiRow1 stats={{ rentals: '1,240', profits: '4.2M', disputes: '18', users: '3,580' }} loading={false} />
-      <KpiRow2 lineData={lineData} rates={{ cancel: '8.4%', dispute: '3.2%', escrow: '2,450,000' }} loading={false} />
+      <KpiRow1 stats={stats} loading={loading} />
+      <KpiRow2 lineData={lineData} rates={rates} loading={loading} />
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         <LineChart chartFilter={chartFilter} setChartFilter={setChartFilter} lineData={lineData} />
@@ -21,8 +28,8 @@ export default function OverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <DisputesTable />
-        <ComplaintsTable />
+        <DisputesTable disputes={disputes} loading={loading} />
+        <ComplaintsTable complaints={complaints} loading={loading} />
       </div>
     </div>
   );

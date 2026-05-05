@@ -1,13 +1,11 @@
 import { X, ChevronLeft, Calendar, Clock, Shield, ShieldAlert, FileText, Image as ImageIcon, CheckCircle } from 'lucide-react';
 import { badgeClass } from '../../../utils/statusClasses';
-import { useNavigate } from 'react-router-dom';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Drawer from '../../../components/ui/Drawer';
+import { router } from '../../../inertia/router';
 
 export default function RentalDrawer({ isOpen, rental, onClose }) {
-  const navigate = useNavigate();
-
   return (
     <Drawer
       isOpen={isOpen}
@@ -40,21 +38,21 @@ export default function RentalDrawer({ isOpen, rental, onClose }) {
                 <p className="text-xs text-brand-text-muted mb-1">المستأجر</p>
                 <p className="font-bold text-brand-text-primary">{rental?.tenant}</p>
               </div>
-              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); navigate('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
+              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); router.visit('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
             </div>
             <div className="flex justify-between items-center pb-3 border-b border-brand-border border-dashed">
               <div>
                 <p className="text-xs text-brand-text-muted mb-1">المؤجر</p>
                 <p className="font-bold text-brand-text-primary">{rental?.owner}</p>
               </div>
-              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); navigate('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
+              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); router.visit('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
             </div>
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-xs text-brand-text-muted mb-1">المعدة</p>
                 <p className="font-bold text-brand-text-primary">{rental?.eq}</p>
               </div>
-              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); navigate('/equipment'); }}>عرض المعدة <ChevronLeft size={14} /></Button>
+              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); router.visit('/equipment'); }}>عرض المعدة <ChevronLeft size={14} /></Button>
             </div>
           </div>
 

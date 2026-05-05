@@ -24,6 +24,7 @@ export default function UsersTable({
     to,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(users, itemsPerPage);
 
   const columns = [
@@ -101,6 +102,7 @@ export default function UsersTable({
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setPage}
+            links={links}
           />
         </div>
       )}

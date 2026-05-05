@@ -20,6 +20,7 @@ export default function DisputesTable({
     totalPages,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(disputes, itemsPerPage);
 
   const columns = [
@@ -80,6 +81,7 @@ export default function DisputesTable({
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setPage}
+            links={links}
           />
         </div>
       )}

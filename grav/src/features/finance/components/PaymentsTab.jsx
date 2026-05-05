@@ -8,6 +8,7 @@ import Modal from '../../../components/ui/Modal';
 import Pagination from '../../../components/ui/Pagination';
 import FilterBar from '../../../components/ui/FilterBar';
 import usePagination from '../../../hooks/usePagination';
+import { isPaginatedSource, rowsFromSource, sourceWithRows } from '../../../utils/dataSource';
 
 export default function PaymentsTab({ rows = [], loading = false }) {
   const [selectedTx, setSelectedTx] = useState(null);
@@ -15,14 +16,16 @@ export default function PaymentsTab({ rows = [], loading = false }) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
+  const isServerPaginated = isPaginatedSource(rows);
+  const sourceRows = rowsFromSource(rows);
 
-  const filteredRows = rows?.filter((row) => {
+  const filteredRows = isServerPaginated ? sourceRows : sourceRows.filter((row) => {
     const q = search.toLowerCase();
     const matchesSearch = !q || row?.id?.toLowerCase?.().includes(q) || row?.tenant?.includes(q) || row?.equipment?.includes(q);
     const matchesStatus = !statusFilter || row?.statusKey === statusFilter;
     const matchesDate = !dateFilter || row?.date === dateFilter;
     return matchesSearch && matchesStatus && matchesDate;
-  }) || [];
+  });
 
 
 
@@ -31,7 +34,8 @@ export default function PaymentsTab({ rows = [], loading = false }) {
     totalPages,
     setPage,
     paginatedData: currentRows,
-  } = usePagination(filteredRows, itemsPerPage);
+    links,
+  } = usePagination(sourceWithRows(rows, filteredRows), itemsPerPage);
 
   const columns = [
     { key: 'id', label: '#' },
@@ -93,7 +97,7 @@ export default function PaymentsTab({ rows = [], loading = false }) {
 
       {totalPages > 1 && (
         <div className="p-4 border-t border-brand-border flex justify-center bg-brand-content/30">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setPage} links={links} />
         </div>
       )}
 

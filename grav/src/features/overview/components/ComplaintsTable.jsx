@@ -1,13 +1,11 @@
-import { useNavigate } from 'react-router-dom';
 import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
-import { complaintsData } from '../../../data/complaints';
+import { router } from '../../../inertia/router';
 
-export default function ComplaintsTable() {
-  const navigate = useNavigate();
-  const rows = complaintsData.slice(0, 3);
+export default function ComplaintsTable({ complaints = [], loading = false }) {
+  const rows = complaints;
   const columns = [
     { key: 'id', label: '#', className: 'py-3 px-4 rounded-r-lg' },
     { key: 'reporter', label: 'المُبلِّغ', className: 'py-3 px-4' },
@@ -22,7 +20,7 @@ export default function ComplaintsTable() {
         <h3 className="text-lg font-bold text-brand-text-primary">آخر البلاغات</h3>
         <button 
           className="text-brand-info text-sm font-medium hover:underline"
-          onClick={() => navigate('/complaints')}
+          onClick={() => router.visit('/complaints')}
         >
           عرض الكل
         </button>
@@ -30,6 +28,7 @@ export default function ComplaintsTable() {
       <Table
         columns={columns}
         data={rows}
+        loading={loading}
         theadClassName="bg-brand-content text-brand-text-muted font-medium"
         renderRow={(complaint) => (
           <tr key={complaint.id} className="hover:bg-brand-content/50 transition-colors">
@@ -43,7 +42,7 @@ export default function ComplaintsTable() {
                   <Button 
                     unstyled 
                     className="border border-brand-primary text-brand-primary px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-brand-primary/10 transition-colors inline-flex items-center"
-                    onClick={() => navigate('/complaints', { state: { openActionModal: true, complaintId: complaint.id } })}
+                    onClick={() => router.visit('/complaints', { state: { openActionModal: true, complaintId: complaint.id } })}
                   >
                     معالجة
                   </Button>

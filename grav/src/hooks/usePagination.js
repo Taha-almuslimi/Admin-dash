@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from 'react';
+import { router } from '../inertia/router';
+import { isPaginatedSource } from '../utils/dataSource';
 
 const EMPTY_ROWS = [];
 
-export default function usePagination(sourceData = [], pageSize = 10) {
-  // If sourceData is an Inertia pagination object (has data, current_page, total)
-  const isInertiaPaginated = sourceData && typeof sourceData === 'object' && !Array.isArray(sourceData) && 'current_page' in sourceData;
+export default function usePagination(sourceData = [], pageSize = 10, options = {}) {
+  const { path, query = {} } = options;
+  const isInertiaPaginated = isPaginatedSource(sourceData);
 
   const dataArray = isInertiaPaginated ? (sourceData.data || EMPTY_ROWS) : (sourceData || EMPTY_ROWS);
   const [clientPage, setClientPage] = useState(1);
@@ -25,17 +27,21 @@ export default function usePagination(sourceData = [], pageSize = 10) {
   }, [currentPage, pageSize, dataArray, isInertiaPaginated]);
 
   const setPage = useCallback((nextPage) => {
+    const resolvedPage = typeof nextPage === 'function' ? nextPage(currentPage) : nextPage;
+    const safePage = Math.min(Math.max(1, resolvedPage), totalPages);
+
     if (isInertiaPaginated) {
-      // With Inertia, changing page usually means doing an Inertia.get or router.get
-      // For now, we just mock the function, but it will be handled by Pagination component's link clicks
-      console.warn('Inertia pagination changes should be handled via router.get()');
+      router.get(path || window.location.pathname, {
+        ...query,
+        page: safePage,
+      }, { preserveScroll: true, preserveState: true });
       return;
     }
     setClientPage((current) => {
-      const resolvedPage = typeof nextPage === 'function' ? nextPage(current) : nextPage;
-      return Math.min(Math.max(1, resolvedPage), totalPages);
+      const nextClientPage = typeof nextPage === 'function' ? nextPage(current) : nextPage;
+      return Math.min(Math.max(1, nextClientPage), totalPages);
     });
-  }, [totalPages, isInertiaPaginated]);
+  }, [currentPage, totalPages, isInertiaPaginated, path, query]);
 
   const resetPage = useCallback(() => {
     if (!isInertiaPaginated) setClientPage(1);

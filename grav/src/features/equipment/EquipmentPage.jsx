@@ -6,32 +6,51 @@ import EquipmentGrid from './components/EquipmentGrid';
 import EquipmentList from './components/EquipmentList';
 import EquipmentDrawer from './components/EquipmentDrawer';
 import useDrawer from '../../hooks/useDrawer';
-import { equipmentData } from '../../data/equipment';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import { EyeOff } from 'lucide-react';
+import { router } from '../../inertia/router';
+import { isPaginatedSource, rowsFromSource, sourceWithRows } from '../../utils/dataSource';
 
-export default function EquipmentPage() {
+export default function EquipmentPage({
+  equipment: equipmentSource = [],
+  filters = {},
+}) {
   const [viewMode, setViewMode] = useState('grid');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [equipment, setEquipment] = useState(equipmentData);
+  const [equipment, setEquipment] = useState(() => rowsFromSource(equipmentSource));
   const [itemToHide, setItemToHide] = useState(null);
   const drawer = useDrawer();
+  const isServerPaginated = isPaginatedSource(equipmentSource);
+  const equipmentRows = isServerPaginated ? rowsFromSource(equipmentSource) : equipment;
 
   // Filter state
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [search, setSearch] = useState(filters.search || '');
+  const [statusFilter, setStatusFilter] = useState(filters.status || '');
+  const [categoryFilter, setCategoryFilter] = useState(filters.category || '');
 
   const filteredEquipment = useMemo(() => {
-    return equipment.filter((eq) => {
+    if (isServerPaginated) return equipmentRows;
+
+    return equipmentRows.filter((eq) => {
       const q = search.toLowerCase();
-      const matchesSearch = !q || eq.name.includes(q) || eq.owner.includes(q);
+      const matchesSearch = !q || eq?.name?.includes(q) || eq?.owner?.includes(q);
       const matchesStatus = !statusFilter || eq.statusKey === statusFilter;
       const matchesCategory = !categoryFilter || eq.categoryKey === categoryFilter;
       return matchesSearch && matchesStatus && matchesCategory;
     });
-  }, [search, statusFilter, categoryFilter, equipment]);
+  }, [search, statusFilter, categoryFilter, equipmentRows, isServerPaginated]);
+
+  const equipmentList = sourceWithRows(equipmentSource, filteredEquipment);
+
+  const updateQuery = (nextFilters) => {
+    router.get('/equipment', {
+      search,
+      status: statusFilter,
+      category: categoryFilter,
+      ...nextFilters,
+    }, { replace: true, preserveState: true });
+  };
 
   const openDrawer = (eq) => {
     setCurrentImageIndex(0);
@@ -52,7 +71,10 @@ export default function EquipmentPage() {
 
   const handleHideEquipment = () => {
     if (itemToHide) {
-      setEquipment(prev => prev.filter(e => e.id !== itemToHide.id));
+      router.delete(`/equipment/${itemToHide.id}`, {}, { preserveState: true });
+      if (!isServerPaginated) {
+        setEquipment(prev => prev.filter(e => e.id !== itemToHide.id));
+      }
       setItemToHide(null);
       drawer.close();
       toast.success('تم إخفاء المعدة');
@@ -64,10 +86,13 @@ export default function EquipmentPage() {
       <FilterBar
         searchPlaceholder="بحث عن معدة..."
         searchValue={search}
-        onSearchChange={(e) => setSearch(e.target.value)}
+        onSearchChange={(e) => {
+          setSearch(e.target.value);
+          updateQuery({ search: e.target.value });
+        }}
         filters={[
-          { key: 'category', placeholder: 'الفئة: الكل', value: categoryFilter, onChange: (e) => setCategoryFilter(e.target.value), options: [{ value: 'build', label: 'بناء' }, { value: 'heavy', label: 'معدات ثقيلة' }, { value: 'power', label: 'طاقة' }] },
-          { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'active', label: 'نشط' }, { value: 'hidden', label: 'مخفي' }] },
+          { key: 'category', placeholder: 'الفئة: الكل', value: categoryFilter, onChange: (e) => { setCategoryFilter(e.target.value); updateQuery({ category: e.target.value }); }, options: [{ value: 'build', label: 'بناء' }, { value: 'heavy', label: 'معدات ثقيلة' }, { value: 'power', label: 'طاقة' }] },
+          { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => { setStatusFilter(e.target.value); updateQuery({ status: e.target.value }); }, options: [{ value: 'active', label: 'نشط' }, { value: 'hidden', label: 'مخفي' }] },
         ]}
         extraActions={
           <div className="flex items-center space-x-2 space-x-reverse bg-brand-content rounded-lg p-1 border border-brand-border">
@@ -89,9 +114,9 @@ export default function EquipmentPage() {
         }
       />
       {viewMode === 'grid' ? (
-        <EquipmentGrid equipment={filteredEquipment} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
+        <EquipmentGrid equipment={equipmentList} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
       ) : (
-        <EquipmentList equipment={filteredEquipment} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
+        <EquipmentList equipment={equipmentList} onOpenDrawer={openDrawer} onHideItem={setItemToHide} />
       )}
       <EquipmentDrawer
         isOpen={drawer.isOpen}

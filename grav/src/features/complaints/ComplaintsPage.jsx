@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import SummaryCards from './components/SummaryCards';
 import ComplaintsTable from './components/ComplaintsTable';
@@ -8,61 +7,88 @@ import ComplaintModal from './components/ComplaintModal';
 import FilterBar from '../../components/ui/FilterBar';
 import useModal from '../../hooks/useModal';
 import Tabs from '../../components/ui/Tabs';
-import { complaintsTabs, complaintsData } from '../../data/complaints';
+import { router } from '../../inertia/router';
+import { isPaginatedSource, rowsFromSource, sourceWithRows } from '../../utils/dataSource';
 
-export default function ComplaintsPage() {
-  const [activeTab, setActiveTab] = useState('complaints');
+export default function ComplaintsPage({
+  complaints: complaintsSource = [],
+  tabs = [],
+  notifications = [],
+  filters = {},
+  routeState = {},
+  loading = false,
+}) {
+  const [activeTab, setActiveTab] = useState(filters.tab || 'complaints');
   const [actionType, setActionType] = useState('warn');
-  const [complaints, setComplaints] = useState(complaintsData);
+  const [complaints, setComplaints] = useState(() => rowsFromSource(complaintsSource));
   const modal = useModal();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const isServerPaginated = isPaginatedSource(complaintsSource);
+  const complaintRows = isServerPaginated ? rowsFromSource(complaintsSource) : complaints;
 
   // Filter state
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
+  const [search, setSearch] = useState(filters.search || '');
+  const [statusFilter, setStatusFilter] = useState(filters.status || '');
+  const [typeFilter, setTypeFilter] = useState(filters.type || '');
 
   const filteredComplaints = useMemo(() => {
-    return complaints.filter((c) => {
+    if (isServerPaginated) return complaintRows;
+
+    return complaintRows.filter((c) => {
       const q = search.toLowerCase();
-      const matchesSearch = !q || c.id.toLowerCase().includes(q) || c.reporter.includes(q) || c.target.includes(q);
+      const matchesSearch = !q || c?.id?.toLowerCase?.().includes(q) || c?.reporter?.includes(q) || c?.target?.includes(q);
       const matchesStatus = !statusFilter || c.statusKey === statusFilter;
       const matchesType = !typeFilter || c.typeKey === typeFilter;
       return matchesSearch && matchesStatus && matchesType;
     });
-  }, [search, statusFilter, typeFilter, complaints]);
+  }, [search, statusFilter, typeFilter, complaintRows, isServerPaginated]);
 
-  const routeComplaint = location.state?.openActionModal
-    ? complaints.find((item) => item.id === location.state.complaintId) || complaints[0]
+  const tableComplaints = sourceWithRows(complaintsSource, filteredComplaints);
+  const hasSearchFilters = Boolean(search || statusFilter || typeFilter);
+
+  const routeComplaint = routeState?.openActionModal
+    ? complaintRows.find((item) => item.id === routeState.complaintId) || complaintRows[0]
     : null;
-  const currentActiveTab = location.state?.activeTab || activeTab;
+  const currentActiveTab = routeState?.activeTab || activeTab;
   const selectedComplaint = modal.selectedItem || routeComplaint;
   const isComplaintModalOpen = modal.isOpen || !!routeComplaint;
 
+  const updateQuery = (nextFilters) => {
+    router.get('/complaints', {
+      tab: activeTab,
+      search,
+      type: typeFilter,
+      status: statusFilter,
+      ...nextFilters,
+    }, { replace: true, preserveState: true });
+  };
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    if (location.state) {
-      navigate('/complaints', { replace: true });
-    }
+    updateQuery({ tab });
   };
 
   const closeComplaintModal = () => {
     modal.close();
     if (routeComplaint) {
-      navigate('/complaints', { replace: true });
+      router.visit('/complaints', { replace: true });
     }
   };
 
   const confirmComplaintAction = ({ complaint, type }) => {
     if (!complaint) return;
-    setComplaints((prevComplaints) => prevComplaints.map((item) => {
-      if (item.id !== complaint.id) return item;
-      if (type === 'reject') {
-        return { ...item, status: 'مرفوض', statusKey: 'rejected', statusColor: 'danger' };
-      }
-      return { ...item, status: 'معالج', statusKey: 'resolved', statusColor: 'success' };
-    }));
+
+    router.patch(`/complaints/${complaint.id}`, { action: type }, { preserveState: true });
+
+    if (!isServerPaginated) {
+      setComplaints((prevComplaints) => prevComplaints.map((item) => {
+        if (item.id !== complaint.id) return item;
+        if (type === 'reject') {
+          return { ...item, status: 'مرفوض', statusKey: 'rejected', statusColor: 'danger' };
+        }
+        return { ...item, status: 'معالج', statusKey: 'resolved', statusColor: 'success' };
+      }));
+    }
+
     toast.success(type === 'authorities' ? 'تم تسجيل الإبلاغ للجهات المختصة' : 'تم حفظ إجراء البلاغ');
     closeComplaintModal();
   };
@@ -72,7 +98,7 @@ export default function ComplaintsPage() {
       <SummaryCards />
 
       <div className="bg-brand-card rounded-xl shadow-sm border border-brand-border overflow-hidden flex flex-col min-h-[500px]">
-          <Tabs tabs={complaintsTabs} activeTab={currentActiveTab} onChange={handleTabChange} />
+          <Tabs tabs={tabs} activeTab={currentActiveTab} onChange={handleTabChange} />
 
         {currentActiveTab === 'complaints' ? (
           <>
@@ -80,17 +106,25 @@ export default function ComplaintsPage() {
               <FilterBar
                 searchPlaceholder="بحث في البلاغات..."
                 searchValue={search}
-                onSearchChange={(e) => setSearch(e.target.value)}
+                onSearchChange={(e) => {
+                  setSearch(e.target.value);
+                  updateQuery({ search: e.target.value });
+                }}
                 filters={[
-                  { key: 'type', placeholder: 'نوع البلاغ: الكل', value: typeFilter, onChange: (e) => setTypeFilter(e.target.value), options: [{ value: 'behavior', label: 'سلوك مسيء' }, { value: 'content', label: 'محتوى مخالف' }, { value: 'fraud', label: 'احتيال' }] },
-                  { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'new', label: 'جديد' }, { value: 'review', label: 'قيد المراجعة' }, { value: 'resolved', label: 'معالج' }, { value: 'rejected', label: 'مرفوض' }] },
+                  { key: 'type', placeholder: 'نوع البلاغ: الكل', value: typeFilter, onChange: (e) => { setTypeFilter(e.target.value); updateQuery({ type: e.target.value }); }, options: [{ value: 'behavior', label: 'سلوك مسيء' }, { value: 'content', label: 'محتوى مخالف' }, { value: 'fraud', label: 'احتيال' }] },
+                  { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => { setStatusFilter(e.target.value); updateQuery({ status: e.target.value }); }, options: [{ value: 'new', label: 'جديد' }, { value: 'review', label: 'قيد المراجعة' }, { value: 'resolved', label: 'معالج' }, { value: 'rejected', label: 'مرفوض' }] },
                 ]}
               />
             </div>
-            <ComplaintsTable complaints={filteredComplaints} onOpenModal={modal.open} />
+            <ComplaintsTable
+              complaints={tableComplaints}
+              loading={loading}
+              isSearchActive={hasSearchFilters}
+              onOpenModal={modal.open}
+            />
           </>
         ) : (
-          <NotificationsTab />
+          <NotificationsTab notifications={notifications} loading={loading} />
         )}
       </div>
 

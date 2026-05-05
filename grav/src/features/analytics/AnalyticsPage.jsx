@@ -5,16 +5,15 @@ import ChartsRow2 from './components/ChartsRow2';
 import KpisTable from './components/KpisTable';
 import Button from '../../components/ui/Button';
 import Select from '../../components/ui/Select';
-import {
-  govData,
-  profitData,
-  compareData,
-  topOwnersData,
-  gaugeData,
-  disputeRate,
-} from '../../data/analytics';
 
-export default function AnalyticsPage() {
+export default function AnalyticsPage({
+  govData = [],
+  profitData = [],
+  compareData = [],
+  topOwnersData = [],
+  gaugeData = [],
+  disputeRate = 0,
+}) {
   const [dateRange, setDateRange] = useState('هذا الأسبوع');
   const [showExportOptions, setShowExportOptions] = useState(false);
 

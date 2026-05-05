@@ -12,6 +12,7 @@ export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
     totalPages,
     setPage,
     paginatedData: currentData,
+    links,
   } = usePagination(equipment, itemsPerPage);
 
   return (
@@ -124,6 +125,7 @@ export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
             currentPage={currentPage} 
             totalPages={totalPages} 
             onPageChange={setPage} 
+            links={links}
           />
         </div>
       )}

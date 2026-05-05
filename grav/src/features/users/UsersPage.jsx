@@ -6,31 +6,53 @@ import UserDrawer from './components/UserDrawer';
 import UserActionModal from './components/UserActionModal';
 import useDrawer from '../../hooks/useDrawer';
 import useModal from '../../hooks/useModal';
-import { usersData } from '../../data/users';
 import { exportCsv } from '../../utils/exportCsv';
+import { router } from '../../inertia/router';
+import { isPaginatedSource, rowsFromSource, sourceWithRows } from '../../utils/dataSource';
 
-export default function UsersPage() {
+export default function UsersPage({
+  users: usersSource = [],
+  filters = {},
+  loading = false,
+}) {
   const drawer = useDrawer();
   const modal = useModal();
   const [actionType, setActionType] = useState('warn');
-  const [users, setUsers] = useState(usersData);
+  const [users, setUsers] = useState(() => rowsFromSource(usersSource));
+  const isServerPaginated = isPaginatedSource(usersSource);
+  const userRows = isServerPaginated ? rowsFromSource(usersSource) : users;
 
   // Filter state
-  const [search, setSearch] = useState('');
-  const [typeFilter, setTypeFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [govFilter, setGovFilter] = useState('');
+  const [search, setSearch] = useState(filters.search || '');
+  const [typeFilter, setTypeFilter] = useState(filters.type || '');
+  const [statusFilter, setStatusFilter] = useState(filters.status || '');
+  const [govFilter, setGovFilter] = useState(filters.gov || '');
 
   const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
+    if (isServerPaginated) return userRows;
+
+    return userRows.filter((user) => {
       const q = search?.toLowerCase?.();
       const matchesSearch = !q || user?.name?.toLowerCase?.()?.includes(q) || user?.phone?.includes(q);
       const matchesType = !typeFilter || user?.typeKey === typeFilter;
-      const matchesStatus = !statusFilter || user.statusKey === statusFilter;
-      const matchesGov = !govFilter || user.govKey === govFilter;
+      const matchesStatus = !statusFilter || user?.statusKey === statusFilter;
+      const matchesGov = !govFilter || user?.govKey === govFilter;
       return matchesSearch && matchesType && matchesStatus && matchesGov;
     });
-  }, [search, typeFilter, statusFilter, govFilter, users]);
+  }, [search, typeFilter, statusFilter, govFilter, userRows, isServerPaginated]);
+
+  const tableUsers = sourceWithRows(usersSource, filteredUsers);
+  const hasSearchFilters = Boolean(search || typeFilter || statusFilter || govFilter);
+
+  const updateQuery = (nextFilters) => {
+    router.get('/users', {
+      search,
+      type: typeFilter,
+      status: statusFilter,
+      gov: govFilter,
+      ...nextFilters,
+    }, { replace: true, preserveState: true });
+  };
 
   const openActionModal = (user, type) => {
     modal.open(user);
@@ -41,7 +63,9 @@ export default function UsersPage() {
   const confirmUserAction = ({ user, type }) => {
     if (!user) return;
 
-    if (type === 'suspend' || type === 'ban') {
+    router.patch(`/users/${user.id}`, { action: type }, { preserveState: true });
+
+    if (!isServerPaginated && (type === 'suspend' || type === 'ban')) {
       setUsers((prevUsers) => prevUsers.map((item) => {
         if (item.id !== user.id) return item;
         return type === 'suspend'
@@ -59,11 +83,14 @@ export default function UsersPage() {
       <FilterBar
         searchPlaceholder="بحث باسم أو جوال..."
         searchValue={search}
-        onSearchChange={(e) => setSearch(e.target.value)}
+        onSearchChange={(e) => {
+          setSearch(e.target.value);
+          updateQuery({ search: e.target.value });
+        }}
         filters={[
-          { key: 'type', placeholder: 'النوع: الكل', value: typeFilter, onChange: (e) => setTypeFilter(e.target.value), options: [{ value: 'tenant', label: 'مستأجر' }, { value: 'owner', label: 'مؤجر' }] },
-          { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => setStatusFilter(e.target.value), options: [{ value: 'active', label: 'نشط' }, { value: 'suspended', label: 'موقوف' }, { value: 'banned', label: 'محظور' }] },
-          { key: 'gov', placeholder: 'المحافظة: الكل', value: govFilter, onChange: (e) => setGovFilter(e.target.value), options: [{ value: 'sanaa', label: 'صنعاء' }, { value: 'aden', label: 'عدن' }, { value: 'taiz', label: 'تعز' }, { value: 'hadramout', label: 'حضرموت' }] },
+          { key: 'type', placeholder: 'النوع: الكل', value: typeFilter, onChange: (e) => { setTypeFilter(e.target.value); updateQuery({ type: e.target.value }); }, options: [{ value: 'tenant', label: 'مستأجر' }, { value: 'owner', label: 'مؤجر' }] },
+          { key: 'status', placeholder: 'الحالة: الكل', value: statusFilter, onChange: (e) => { setStatusFilter(e.target.value); updateQuery({ status: e.target.value }); }, options: [{ value: 'active', label: 'نشط' }, { value: 'suspended', label: 'موقوف' }, { value: 'banned', label: 'محظور' }] },
+          { key: 'gov', placeholder: 'المحافظة: الكل', value: govFilter, onChange: (e) => { setGovFilter(e.target.value); updateQuery({ gov: e.target.value }); }, options: [{ value: 'sanaa', label: 'صنعاء' }, { value: 'aden', label: 'عدن' }, { value: 'taiz', label: 'تعز' }, { value: 'hadramout', label: 'حضرموت' }] },
         ]}
         onExport={() => exportCsv('users.csv', filteredUsers, [
           { label: 'الاسم', value: 'name' },
@@ -75,7 +102,13 @@ export default function UsersPage() {
         ])}
         exportLabel="تصدير CSV"
       />
-      <UsersTable users={filteredUsers} onOpenDrawer={drawer.open} onOpenActionModal={openActionModal} />
+      <UsersTable
+        users={tableUsers}
+        loading={loading}
+        isSearchActive={hasSearchFilters}
+        onOpenDrawer={drawer.open}
+        onOpenActionModal={openActionModal}
+      />
       <UserDrawer isOpen={drawer.isOpen} user={drawer.selectedItem} onClose={drawer.close} onOpenActionModal={openActionModal} />
       <UserActionModal
         isOpen={modal.isOpen}
