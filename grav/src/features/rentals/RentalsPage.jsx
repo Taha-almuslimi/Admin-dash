@@ -19,12 +19,12 @@ export default function RentalsPage() {
 
   const filteredRentals = useMemo(() => {
     return rentalsData.filter((rental) => {
-      const q = search.toLowerCase();
-      const matchesSearch = !q || rental.id.toLowerCase().includes(q) || rental.tenant.includes(q) || rental.eq.includes(q);
-      const matchesStatus = !statusFilter || rental.statusKey === statusFilter;
-      const matchesTab = activeTab === 'all' || rental.statusKey === activeTab;
-      const matchesStart = !startDate || rental.startDate >= startDate;
-      const matchesEnd = !endDate || rental.endDate <= endDate;
+      const q = search?.toLowerCase?.();
+      const matchesSearch = !q || rental?.id?.toLowerCase?.()?.includes(q) || rental?.tenant?.includes(q) || rental?.eq?.includes(q);
+      const matchesStatus = !statusFilter || rental?.statusKey === statusFilter;
+      const matchesTab = activeTab === 'all' || rental?.statusKey === activeTab;
+      const matchesStart = !startDate || rental?.startDate >= startDate;
+      const matchesEnd = !endDate || rental?.endDate <= endDate;
       return matchesSearch && matchesStatus && matchesTab && matchesStart && matchesEnd;
     });
   }, [search, statusFilter, activeTab, startDate, endDate]);

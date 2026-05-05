@@ -37,8 +37,8 @@ export default function EquipmentDrawer({
       {equipment && (
         <>
           <div className="relative h-64 bg-black group">
-            <img src={equipment.images[currentImageIndex]} alt={equipment.name} className="w-full h-full object-contain" />
-            {equipment.images.length > 1 && (
+            <img src={equipment?.images?.[currentImageIndex] || '/placeholder.png'} alt={equipment?.name || 'معدة'} className="w-full h-full object-contain" />
+            {equipment?.images?.length > 1 && (
               <>
                 <Button unstyled onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80">
                   <ChevronLeft size={20} />
@@ -47,7 +47,7 @@ export default function EquipmentDrawer({
                   <ChevronRight size={20} />
                 </Button>
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 space-x-reverse">
-                  {equipment.images.map((_, idx) => (
+                  {equipment?.images?.map((_, idx) => (
                     <div key={idx} className={`w-2 h-2 rounded-full ${idx === currentImageIndex ? 'bg-white' : 'bg-white/50'}`} />
                   ))}
                 </div>
@@ -67,13 +67,13 @@ export default function EquipmentDrawer({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-brand-content p-4 rounded-xl border border-brand-border">
-                <p className="text-xs text-brand-text-muted mb-1">سعر الإيجار</p>
-                <p className="font-bold text-brand-primary">{equipment.price.toLocaleString()} <span className="text-sm font-normal text-brand-text-primary">ر.ي / يوم</span></p>
+              <div className="flex justify-between items-center p-3 bg-brand-content rounded-lg border border-brand-border">
+                <span className="text-sm font-bold text-brand-text-muted">سعر الإيجار:</span>
+                <p className="font-bold text-brand-primary">{equipment?.price?.toLocaleString?.() || '0'} <span className="text-sm font-normal text-brand-text-primary">ر.ي / يوم</span></p>
               </div>
-              <div className="bg-brand-content p-4 rounded-xl border border-brand-border">
-                <p className="text-xs text-brand-text-muted mb-1">مبلغ التأمين</p>
-                <p className="font-bold text-brand-text-primary">{equipment.insurance.toLocaleString()} <span className="text-sm font-normal text-brand-text-muted">ر.ي</span></p>
+              <div className="flex justify-between items-center p-3 bg-brand-content rounded-lg border border-brand-border">
+                <span className="text-sm font-bold text-brand-text-muted">مبلغ التأمين:</span>
+                <p className="font-bold text-brand-text-primary">{equipment?.insurance?.toLocaleString?.() || '0'} <span className="text-sm font-normal text-brand-text-muted">ر.ي</span></p>
               </div>
             </div>
 

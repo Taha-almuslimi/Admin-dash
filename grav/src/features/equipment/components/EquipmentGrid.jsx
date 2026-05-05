@@ -43,7 +43,7 @@ export default function EquipmentGrid({ equipment, onOpenDrawer, onHideItem }) {
               
               <div className="absolute bottom-3 right-3">
                  <div className="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-lg border border-white/20 flex flex-col items-center">
-                    <span className="text-brand-primary font-black text-sm leading-none">{item.price.toLocaleString()}</span>
+                    <span className="text-brand-primary font-black text-sm leading-none">{item?.price?.toLocaleString?.() || '0'}</span>
                     <span className="text-[9px] text-brand-text-muted font-bold mt-0.5">ر.ي / يوم</span>
                  </div>
               </div>

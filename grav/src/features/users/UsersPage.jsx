@@ -23,9 +23,9 @@ export default function UsersPage() {
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
-      const q = search.toLowerCase();
-      const matchesSearch = !q || user.name.toLowerCase().includes(q) || user.phone.includes(q);
-      const matchesType = !typeFilter || user.typeKey === typeFilter;
+      const q = search?.toLowerCase?.();
+      const matchesSearch = !q || user?.name?.toLowerCase?.()?.includes(q) || user?.phone?.includes(q);
+      const matchesType = !typeFilter || user?.typeKey === typeFilter;
       const matchesStatus = !statusFilter || user.statusKey === statusFilter;
       const matchesGov = !govFilter || user.govKey === govFilter;
       return matchesSearch && matchesType && matchesStatus && matchesGov;

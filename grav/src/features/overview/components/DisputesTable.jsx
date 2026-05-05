@@ -37,7 +37,7 @@ export default function DisputesTable() {
             <td className="py-3 px-4 font-medium">{dispute.tenant}</td>
             <td className="py-3 px-4 font-medium">{dispute.owner}</td>
             <td className="py-3 px-4">{dispute.eq}</td>
-            <td className="py-3 px-4 font-bold text-brand-danger">{dispute.amount.toLocaleString()} ر.ي</td>
+            <td className="py-3 px-4 font-bold text-brand-danger">{dispute?.amount?.toLocaleString?.() || '0'} ر.ي</td>
             <td className="py-3 px-4 text-center">
               <Button
                 unstyled

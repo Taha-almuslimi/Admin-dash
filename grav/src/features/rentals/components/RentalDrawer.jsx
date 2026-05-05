@@ -1,4 +1,4 @@
-import { X, ChevronLeft, Calendar, Clock, Shield, FileText, Image as ImageIcon, CheckCircle } from 'lucide-react';
+import { X, ChevronLeft, Calendar, Clock, Shield, ShieldAlert, FileText, Image as ImageIcon, CheckCircle } from 'lucide-react';
 import { badgeClass } from '../../../utils/statusClasses';
 import { useNavigate } from 'react-router-dom';
 import Badge from '../../../components/ui/Badge';
@@ -18,11 +18,11 @@ export default function RentalDrawer({ isOpen, rental, onClose }) {
           <div>
             <h2 className="text-xl font-bold text-brand-text-primary flex items-center">
               تفاصيل العملية 
-              <span className="text-sm font-normal text-brand-text-muted ml-2 mr-2" dir="ltr">{rental.id}</span>
+              <span className="text-sm font-normal text-brand-text-muted ml-2 mr-2" dir="ltr">{rental?.id}</span>
             </h2>
             <div className="mt-2">
-              <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(rental.statusColor)}`}>
-                {rental.status === 'In Use' ? 'In Use 🔧' : rental.status}
+              <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(rental?.statusColor)}`}>
+                {rental?.status === 'In Use' ? 'In Use 🔧' : rental?.status}
               </Badge>
             </div>
           </div>
@@ -38,49 +38,52 @@ export default function RentalDrawer({ isOpen, rental, onClose }) {
             <div className="flex justify-between items-center pb-3 border-b border-brand-border border-dashed">
               <div>
                 <p className="text-xs text-brand-text-muted mb-1">المستأجر</p>
-                <p className="font-bold text-brand-text-primary">{rental.tenant}</p>
+                <p className="font-bold text-brand-text-primary">{rental?.tenant}</p>
               </div>
-              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose(); navigate('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
+              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); navigate('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
             </div>
             <div className="flex justify-between items-center pb-3 border-b border-brand-border border-dashed">
               <div>
                 <p className="text-xs text-brand-text-muted mb-1">المؤجر</p>
-                <p className="font-bold text-brand-text-primary">{rental.owner}</p>
+                <p className="font-bold text-brand-text-primary">{rental?.owner}</p>
               </div>
-              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose(); navigate('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
+              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); navigate('/users'); }}>عرض الملف <ChevronLeft size={14} /></Button>
             </div>
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-xs text-brand-text-muted mb-1">المعدة</p>
-                <p className="font-bold text-brand-text-primary">{rental.eq}</p>
+                <p className="font-bold text-brand-text-primary">{rental?.eq}</p>
               </div>
-              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose(); navigate('/equipment'); }}>عرض المعدة <ChevronLeft size={14} /></Button>
+              <Button unstyled className="text-brand-info text-sm font-bold flex items-center hover:underline" onClick={() => { onClose?.(); navigate('/equipment'); }}>عرض المعدة <ChevronLeft size={14} /></Button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-brand-content p-4 rounded-xl border border-brand-border">
               <p className="text-xs text-brand-text-muted mb-1 flex items-center"><Calendar size={12} className="ml-1"/> فترة الإيجار</p>
-              <p className="font-bold text-sm" dir="ltr">{rental.startDate}</p>
-              <p className="font-bold text-sm" dir="ltr">{rental.endDate}</p>
+              <p className="font-bold text-sm" dir="ltr">{rental?.startDate}</p>
+              <p className="font-bold text-sm" dir="ltr">{rental?.endDate}</p>
             </div>
             <div className="bg-brand-content p-4 rounded-xl border border-brand-border">
               <p className="text-xs text-brand-text-muted mb-1 flex items-center"><Clock size={12} className="ml-1"/> المدة</p>
-              <p className="font-bold text-brand-text-primary text-lg">{rental.duration}</p>
+              <p className="font-bold text-brand-text-primary text-lg">{rental?.duration}</p>
             </div>
-            <div className="bg-brand-content p-4 rounded-xl border border-brand-border col-span-2 flex justify-between items-center">
-              <div>
-                <p className="text-xs text-brand-text-muted mb-1">مبلغ الإيجار الإجمالي</p>
-                <p className="font-bold text-brand-primary text-xl">{rental.total.toLocaleString()} <span className="text-sm font-normal text-brand-text-primary">ر.ي</span></p>
+            <div className="space-y-3 col-span-2">
+              <div className="flex justify-between items-center p-3 bg-brand-content rounded-lg border border-brand-border">
+                <span className="text-sm font-bold text-brand-text-muted">الإجمالي الكلي:</span>
+                <p className="font-bold text-brand-primary text-xl">{rental?.total?.toLocaleString?.() || '0'} <span className="text-sm font-normal text-brand-text-primary">ر.ي</span></p>
               </div>
-              <div className="text-left">
-                <p className="text-xs text-brand-text-muted mb-1">مبلغ التأمين</p>
-                <p className="font-bold text-brand-text-primary">{rental.insurance.toLocaleString()} ر.ي</p>
+              <div className="flex justify-between items-center p-3 bg-brand-content rounded-lg border border-brand-border">
+                <span className="text-sm font-bold text-brand-text-muted">مبلغ التأمين:</span>
+                <p className="font-bold text-brand-text-primary">{rental?.insurance?.toLocaleString?.() || '0'} ر.ي</p>
               </div>
-            </div>
-            <div className="bg-brand-warning/10 p-4 rounded-xl border border-brand-warning/20 col-span-2 flex justify-between items-center">
-              <p className="text-sm font-bold text-brand-warning flex items-center"><Shield size={16} className="ml-2"/> Escrow المحتجز حالياً</p>
-              <p className="font-bold text-brand-warning text-lg">{rental.escrow.toLocaleString()} ر.ي</p>
+              <div className="flex justify-between items-center p-3 bg-brand-warning/10 rounded-lg border border-brand-warning/20">
+                <span className="text-sm font-bold text-brand-warning flex items-center">
+                  <ShieldAlert size={16} className="ml-1" />
+                  مبلغ Escrow المحتجز:
+                </span>
+                <p className="font-bold text-brand-warning text-lg">{rental?.escrow?.toLocaleString?.() || '0'} ر.ي</p>
+              </div>
             </div>
           </div>
 

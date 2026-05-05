@@ -51,7 +51,7 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
                 </div>
               </td>
               <td className="px-6 py-4 font-bold text-brand-text-primary">{item.owner}</td>
-              <td className="px-6 py-4 text-center font-bold text-brand-primary">{item.price.toLocaleString()} ر.ي</td>
+              <td className="px-6 py-4 text-center font-bold text-brand-primary">{item?.price?.toLocaleString?.() || '0'} ر.ي</td>
               <td className="px-6 py-4 text-center">
                 <Badge unstyled className={`px-2.5 py-1 text-xs font-bold rounded-md ${badgeClass(item.statusColor)}`}>
                   {item.status}

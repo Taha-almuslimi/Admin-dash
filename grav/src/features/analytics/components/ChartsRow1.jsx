@@ -35,7 +35,7 @@ export default function ChartsRow1({ govData, profitData, formatCurrency }) {
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
               <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#888888', fontSize: 12}} />
               <YAxis tickFormatter={formatCurrency} axisLine={false} tickLine={false} tick={{fill: '#888888', fontSize: 12}} />
-              <Tooltip formatter={(value) => value.toLocaleString() + ' ر.ي'} contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #E0E0E0', direction: 'rtl' }} />
+              <Tooltip formatter={(value) => value?.toLocaleString?.() + ' ر.ي'} contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #E0E0E0', direction: 'rtl' }} />
               <Area type="monotone" dataKey="value" name="الأرباح" stroke="#27AE60" strokeWidth={3} fillOpacity={1} fill="url(#colorProfit)" />
             </AreaChart>
           </ResponsiveContainer>

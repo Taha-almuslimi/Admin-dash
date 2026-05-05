@@ -1,3 +1,4 @@
+import { isValidElement } from 'react';
 import EmptyState from './EmptyState';
 import Skeleton from './Skeleton';
 
@@ -40,7 +41,7 @@ export default function Table({
           ) : (
             <tr>
               <td colSpan={columns?.length || 1}>
-                <EmptyState {...(emptyState || { title: 'لا توجد بيانات' })} />
+                {isValidElement(emptyState) ? emptyState : <EmptyState {...(emptyState || { title: 'لا توجد بيانات' })} />}
               </td>
             </tr>
           )}

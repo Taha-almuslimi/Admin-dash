@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { PauseCircle, Search } from 'lucide-react';
 import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
@@ -113,7 +113,7 @@ export default function EscrowTab({ rows = [], loading = false }) {
           <div className="bg-brand-content p-4 rounded-lg border border-brand-border space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-brand-text-muted">المبلغ المحتجز:</span>
-              <span className="font-bold text-brand-warning">{selectedOp?.amount.toLocaleString()} ر.ي</span>
+              <span className="font-bold text-brand-warning">{selectedOp?.amount?.toLocaleString?.() || '0'} ر.ي</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-brand-text-muted">تاريخ الاحتجاز:</span>
