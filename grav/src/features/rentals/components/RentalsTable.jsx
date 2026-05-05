@@ -1,4 +1,5 @@
 import { FileText, Search } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
@@ -43,10 +44,7 @@ export default function RentalsTable({ rentals, onOpenDrawer }) {
                 <td className="px-6 py-4 text-center font-bold text-brand-text-primary">{rental.duration}</td>
                 <td className="px-6 py-4 text-center font-bold text-brand-primary">{rental.total.toLocaleString()}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${
-                    rental.statusColor === 'pending' ? 'bg-brand-text-muted/10 text-brand-text-muted' :
-                    `bg-brand-${rental.statusColor}/10 text-brand-${rental.statusColor}`
-                  }`}>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(rental.statusColor)}`}>
                     {rental.status === 'In Use' ? 'In Use 🔧' : rental.status}
                   </Badge>
                 </td>

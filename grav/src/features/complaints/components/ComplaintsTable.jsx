@@ -1,4 +1,5 @@
 import { MessageSquare, Search } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
@@ -47,7 +48,7 @@ export default function ComplaintsTable({ complaints, onOpenModal }) {
                   {complaint.priorityKey === 'high' ? <span className="text-brand-danger font-bold text-xs">🔴 عالية</span> : <span className="text-brand-text-muted text-xs">عادية</span>}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 bg-brand-${complaint.statusColor}/10 text-brand-${complaint.statusColor} rounded-md text-xs font-bold`}>{complaint.status}</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(complaint.statusColor)}`}>{complaint.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button unstyled onClick={() => onOpenModal(complaint)} className="border border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors inline-flex items-center">

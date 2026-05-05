@@ -1,4 +1,5 @@
 import { Eye, AlertTriangle, PauseCircle, Ban, Search } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Pagination from '../../../components/ui/Pagination';
@@ -47,7 +48,7 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
                 </td>
                 <td className="px-6 py-4 font-medium" dir="ltr">{user.phone}</td>
                 <td className="px-6 py-4">
-                  <Badge unstyled className={`px-2.5 py-1 text-xs font-bold rounded-md bg-brand-${user.typeColor}/10 text-brand-${user.typeColor}`}>
+                  <Badge unstyled className={`px-2.5 py-1 text-xs font-bold rounded-md ${badgeClass(user.typeColor)}`}>
                     {user.type}
                   </Badge>
                 </td>
@@ -57,7 +58,7 @@ export default function UsersTable({ users, onOpenDrawer, onOpenActionModal }) {
                 </td>
                 <td className="px-6 py-4 text-center text-brand-text-muted">{user.ops}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-3 py-1 rounded-full text-xs font-bold bg-brand-${user.statusColor}/10 text-brand-${user.statusColor}`}>
+                  <Badge unstyled className={`px-3 py-1 rounded-full text-xs font-bold ${badgeClass(user.statusColor)}`}>
                     {user.status}
                   </Badge>
                 </td>

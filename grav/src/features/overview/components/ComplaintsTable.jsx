@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
@@ -35,7 +36,7 @@ export default function ComplaintsTable() {
                 <td className="py-3 px-4 text-brand-text-muted" dir="ltr">{complaint.id}</td>
                 <td className="py-3 px-4 font-medium">{complaint.reporter}</td>
                 <td className="py-3 px-4">
-                  <Badge unstyled className={`px-2 py-1 bg-brand-${complaint.statusColor}/10 text-brand-${complaint.statusColor} rounded-md text-xs font-bold`}>{complaint.type}</Badge>
+                  <Badge unstyled className={`px-2 py-1 rounded-md text-xs font-bold ${badgeClass(complaint.statusColor)}`}>{complaint.type}</Badge>
                 </td>
                 <td className="py-3 px-4 text-brand-text-muted">{complaint.date}</td>
                 <td className="py-3 px-4 text-center">

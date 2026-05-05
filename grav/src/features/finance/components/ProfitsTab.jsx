@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
@@ -67,7 +68,7 @@ export default function ProfitsTab() {
                 <td className="px-6 py-4 text-center font-medium">{8 + i * 3}</td>
                 <td className="px-6 py-4 font-bold text-brand-success">{amounts[i - 1]} ر.ي</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 bg-brand-${statuses[i % 3].color}/10 text-brand-${statuses[i % 3].color} rounded-md text-xs font-bold`}>{statuses[i % 3].label}</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(statuses[i % 3].color)}`}>{statuses[i % 3].label}</Badge>
                 </td>
               </tr>
         )}

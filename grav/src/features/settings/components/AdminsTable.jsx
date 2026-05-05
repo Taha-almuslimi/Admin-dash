@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Edit, Trash2, Plus } from 'lucide-react';
+import { badgeClass, borderClass } from '../../../utils/statusClasses';
 import Button from '../../../components/ui/Button';
 import Select from '../../../components/ui/Select';
 import Table from '../../../components/ui/Table';
@@ -36,7 +37,7 @@ export default function AdminsTable({ admins }) {
                 <td className="px-6 py-4 text-brand-text-muted">{admin.email}</td>
                 <td className="px-6 py-4">
                   <Select
-                    className={`bg-brand-${admin.roleColor}/10 text-brand-${admin.roleColor} border border-brand-${admin.roleColor}/20 rounded-md px-3 py-1.5 font-bold text-xs focus:outline-none`}
+                    className={`${badgeClass(admin.roleColor)} border ${borderClass(admin.roleColor)} rounded-md px-3 py-1.5 font-bold text-xs focus:outline-none`}
                     defaultValue={admin.role}
                     options={[{ value: 'Super Admin', label: 'Super Admin' }, { value: 'Support', label: 'Support' }, { value: 'Finance', label: 'Finance' }]}
                   />

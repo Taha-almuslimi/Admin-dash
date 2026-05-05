@@ -1,3 +1,4 @@
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Table from '../../../components/ui/Table';
 import Pagination from '../../../components/ui/Pagination';
@@ -39,7 +40,7 @@ export default function AuditTable({ auditData }) {
                 <td className="px-6 py-4 font-bold text-brand-text-muted" dir="ltr">{log.time}</td>
                 <td className="px-6 py-4 font-bold text-brand-text-primary">{log.admin}</td>
                 <td className="px-6 py-4">
-                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold bg-brand-${log.roleColor}/10 text-brand-${log.roleColor}`}>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(log.roleColor)}`}>
                     {log.role}
                   </Badge>
                 </td>

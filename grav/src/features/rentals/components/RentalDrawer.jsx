@@ -1,4 +1,5 @@
 import { X, ChevronLeft, Calendar, Clock, Shield, FileText, Image as ImageIcon, CheckCircle } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import { useNavigate } from 'react-router-dom';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
@@ -20,10 +21,7 @@ export default function RentalDrawer({ isOpen, rental, onClose }) {
               <span className="text-sm font-normal text-brand-text-muted ml-2 mr-2" dir="ltr">{rental.id}</span>
             </h2>
             <div className="mt-2">
-              <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${
-                rental.statusColor === 'pending' ? 'bg-brand-text-muted/10 text-brand-text-muted' :
-                `bg-brand-${rental.statusColor}/10 text-brand-${rental.statusColor}`
-              }`}>
+              <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(rental.statusColor)}`}>
                 {rental.status === 'In Use' ? 'In Use 🔧' : rental.status}
               </Badge>
             </div>

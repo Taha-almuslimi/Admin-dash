@@ -49,6 +49,7 @@ export default function DisputesTable() {
             </td>
           </tr>
         )}
+        
       />
     </div>
   );

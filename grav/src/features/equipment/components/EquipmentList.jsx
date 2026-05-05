@@ -1,4 +1,5 @@
 import { Eye, Edit, EyeOff, Search } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
@@ -52,7 +53,7 @@ export default function EquipmentList({ equipment, onOpenDrawer, onHideItem }) {
               <td className="px-6 py-4 font-bold text-brand-text-primary">{item.owner}</td>
               <td className="px-6 py-4 text-center font-bold text-brand-primary">{item.price.toLocaleString()} ر.ي</td>
               <td className="px-6 py-4 text-center">
-                <Badge unstyled className={`px-2.5 py-1 text-xs font-bold rounded-md bg-brand-${item.statusColor}/10 text-brand-${item.statusColor}`}>
+                <Badge unstyled className={`px-2.5 py-1 text-xs font-bold rounded-md ${badgeClass(item.statusColor)}`}>
                   {item.status}
                 </Badge>
               </td>

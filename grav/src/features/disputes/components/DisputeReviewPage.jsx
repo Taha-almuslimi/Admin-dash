@@ -1,4 +1,5 @@
 import { AlertCircle, Eye, ArrowRight, ShieldAlert, FileText, Upload, Camera, FileCheck2, Scale } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 
 export default function DisputeReviewPage({
   dispute,
@@ -22,7 +23,7 @@ export default function DisputeReviewPage({
             </h2>
           </div>
         </div>
-        <span className={`px-3 py-1 rounded-full text-xs font-bold bg-brand-${dispute.statusColor}/10 text-brand-${dispute.statusColor}`}>
+        <span className={`px-3 py-1 rounded-full text-xs font-bold ${badgeClass(dispute.statusColor)}`}>
           {dispute.status}
         </span>
       </div>

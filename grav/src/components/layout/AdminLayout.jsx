@@ -7,20 +7,19 @@ import {
 import { Toaster } from 'react-hot-toast';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import { adminPageContracts } from '../../contracts/adminContracts';
 
 const navItems = [
-  { ...adminPageContracts.overview, label: 'الرئيسية', icon: Home },
-  { ...adminPageContracts.users, label: 'المستخدمون', icon: Users },
-  { ...adminPageContracts.equipment, label: 'المعدات', icon: Truck },
-  { ...adminPageContracts.rentals, label: 'عمليات التأجير', icon: ShoppingCart },
-  { ...adminPageContracts.disputes, label: 'النزاعات', icon: AlertTriangle },
-  { ...adminPageContracts.finance, label: 'الإشراف المالي', icon: DollarSign },
-  { ...adminPageContracts.complaints, label: 'البلاغات', icon: Flag },
-  { ...adminPageContracts.analytics, label: 'التقارير', icon: BarChart2 },
-  { ...adminPageContracts.reviews, label: 'التقييمات', icon: Star },
-  { ...adminPageContracts.audit, label: 'سجل العمليات', icon: Clock },
-  { ...adminPageContracts.settings, label: 'الإعدادات', icon: Settings },
+  { path: '/overview', label: 'الرئيسية', icon: Home },
+  { path: '/users', label: 'المستخدمون', icon: Users },
+  { path: '/equipment', label: 'المعدات', icon: Truck },
+  { path: '/rentals', label: 'عمليات التأجير', icon: ShoppingCart },
+  { path: '/disputes', label: 'النزاعات', icon: AlertTriangle },
+  { path: '/finance', label: 'الإشراف المالي', icon: DollarSign },
+  { path: '/complaints', label: 'البلاغات', icon: Flag },
+  { path: '/analytics', label: 'التقارير', icon: BarChart2 },
+  { path: '/reviews', label: 'التقييمات', icon: Star },
+  { path: '/audit', label: 'سجل العمليات', icon: Clock },
+  { path: '/settings', label: 'الإعدادات', icon: Settings },
 ];
 
 export default function AdminLayout() {

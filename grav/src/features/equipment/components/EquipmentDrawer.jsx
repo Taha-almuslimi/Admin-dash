@@ -1,4 +1,5 @@
 import { ChevronRight, ChevronLeft, EyeOff, Edit, Trash2 } from 'lucide-react';
+import { badgeSolidClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Drawer from '../../../components/ui/Drawer';
@@ -53,7 +54,7 @@ export default function EquipmentDrawer({
               </>
             )}
             <div className="absolute top-4 left-4">
-              <Badge unstyled className={`px-3 py-1 text-xs font-bold rounded-md shadow-sm bg-brand-${equipment.statusColor}/90 text-white backdrop-blur-sm`}>
+              <Badge unstyled className={`px-3 py-1 text-xs font-bold rounded-md shadow-sm backdrop-blur-sm ${badgeSolidClass(equipment.statusColor)}`}>
                 {equipment.status}
               </Badge>
             </div>

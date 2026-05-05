@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Calendar, StopCircle } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Table from '../../../components/ui/Table';
@@ -84,7 +85,7 @@ export default function PaymentsTab() {
                 <td className="px-6 py-4 font-medium">{row.insurance.toLocaleString()} ر.ي</td>
                 <td className="px-6 py-4 text-brand-text-muted" dir="ltr">{row.date}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 bg-brand-${row.statusColor}/10 text-brand-${row.statusColor} rounded-md text-xs font-bold`}>{row.status}</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(row.statusColor)}`}>{row.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button 

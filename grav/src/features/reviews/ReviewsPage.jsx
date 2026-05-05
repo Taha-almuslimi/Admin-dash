@@ -22,7 +22,7 @@ export default function ReviewsPage() {
   const filteredReviews = useMemo(() => {
     return reviews.filter((r) => {
       const q = search.toLowerCase();
-      const matchesSearch = !q || r.author.toLowerCase().includes(q) || r.target.toLowerCase().includes(q);
+      const matchesSearch = !q || r.rater.toLowerCase().includes(q) || r.target.toLowerCase().includes(q);
       const matchesType = !typeFilter || r.typeKey === typeFilter;
       const matchesStatus = !statusFilter || r.statusKey === statusFilter;
       const matchesRating = !ratingFilter || r.rating.toString() === ratingFilter;

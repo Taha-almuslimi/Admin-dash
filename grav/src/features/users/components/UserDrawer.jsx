@@ -1,4 +1,5 @@
 import { Phone, Mail, Calendar, CheckCircle } from 'lucide-react';
+import { badgeClass } from '../../../utils/statusClasses';
 import Badge from '../../../components/ui/Badge';
 import Button from '../../../components/ui/Button';
 import Drawer from '../../../components/ui/Drawer';
@@ -31,7 +32,7 @@ export default function UserDrawer({ isOpen, user, onClose, onOpenActionModal })
             <div>
               <h3 className="text-2xl font-bold text-brand-text-primary">{user.name}</h3>
               <div className="flex items-center space-x-2 space-x-reverse mt-2">
-                <Badge unstyled className={`px-2 py-0.5 text-xs font-bold rounded bg-brand-${user.typeColor}/10 text-brand-${user.typeColor}`}>
+                <Badge unstyled className={`px-2 py-0.5 text-xs font-bold rounded ${badgeClass(user.typeColor)}`}>
                   {user.type}
                 </Badge>
                 <span className="text-brand-text-muted text-sm flex items-center">📍 {user.gov}</span>
