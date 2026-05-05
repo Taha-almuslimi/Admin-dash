@@ -8,27 +8,17 @@ import FilterBar from '../../../components/ui/FilterBar';
 import EmptyState from '../../../components/ui/EmptyState';
 import usePagination from '../../../hooks/usePagination';
 
-export default function ProfitsTab() {
+export default function ProfitsTab({ rows = [], loading = false }) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
-  const rows = [1, 2, 3, 4, 5, 6, 7, 8];
-  const owners = ['مؤسسة التقنية', 'شركة البناء الحديثة', 'أحمد محمد', 'شركة الإعمار', 'مؤسسة النقل', 'علي صالح', 'شركة السلام', 'مؤسسة الأمل'];
-  const amounts = ['450,000', '320,000', '180,000', '750,000', '95,000', '210,000', '560,000', '140,000'];
-  const statuses = [
-    { key: 'processing', label: 'Processing', color: 'info' },
-    { key: 'completed', label: 'تم التحويل', color: 'success' },
-    { key: 'pending', label: 'معلق', color: 'warning' },
-  ];
-
-  const filteredRows = rows.filter((i) => {
-    const ownerName = owners[i - 1];
-    const status = statuses[i % 3];
-    if (search && !ownerName.includes(search)) return false;
-    if (statusFilter && status.key !== statusFilter) return false;
-    return true;
-  });
+  const filteredRows = rows?.filter((row) => {
+    const q = search.toLowerCase();
+    const matchesSearch = !q || row?.owner?.toLowerCase?.().includes(q);
+    const matchesStatus = !statusFilter || row?.statusKey === statusFilter;
+    return matchesSearch && matchesStatus;
+  }) || [];
 
   const {
     currentPage,
@@ -60,15 +50,16 @@ export default function ProfitsTab() {
         <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
       ) : (
       <Table
+        loading={loading}
         columns={columns}
         data={currentRows}
-        renderRow={(i) => (
-          <tr key={i} className="hover:bg-brand-content/50 transition-colors">
-                <td className="px-6 py-4 font-bold text-brand-text-primary">{owners[i - 1]}</td>
-                <td className="px-6 py-4 text-center font-medium">{8 + i * 3}</td>
-                <td className="px-6 py-4 font-bold text-brand-success">{amounts[i - 1]} ر.ي</td>
+        renderRow={(row, i) => (
+          <tr key={row?.id || i} className="hover:bg-brand-content/50 transition-colors">
+                <td className="px-6 py-4 font-bold text-brand-text-primary">{row?.owner}</td>
+                <td className="px-6 py-4 text-center font-medium">{row?.count}</td>
+                <td className="px-6 py-4 font-bold text-brand-success">{row?.profits} ر.ي</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(statuses[i % 3].color)}`}>{statuses[i % 3].label}</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(row?.statusColor)}`}>{row?.status}</Badge>
                 </td>
               </tr>
         )}

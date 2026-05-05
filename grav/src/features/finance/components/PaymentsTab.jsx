@@ -9,32 +9,22 @@ import Pagination from '../../../components/ui/Pagination';
 import FilterBar from '../../../components/ui/FilterBar';
 import usePagination from '../../../hooks/usePagination';
 
-export default function PaymentsTab() {
+export default function PaymentsTab({ rows = [], loading = false }) {
   const [selectedTx, setSelectedTx] = useState(null);
   const [dateFilter, setDateFilter] = useState('');
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
-  const rows = useMemo(() => [1, 2, 3, 4, 5, 6, 7].map((i) => ({
-    id: `TRX-00${i}`,
-    tenant: i % 2 === 0 ? 'ياسر علي' : 'أحمد محمد',
-    equipment: i % 3 === 0 ? 'رافعة شوكية' : 'حفار JCB',
-    rent: 15000 + i * 1000,
-    insurance: 50000,
-    date: `2024-05-${String(i + 10).padStart(2, '0')}`,
-    status: i % 3 === 0 ? 'معلق' : 'مكتمل',
-    statusKey: i % 3 === 0 ? 'pending' : 'paid',
-    statusColor: i % 3 === 0 ? 'warning' : 'success',
-  })), []);
-
-  const filteredRows = rows.filter((row) => {
+  const filteredRows = rows?.filter((row) => {
     const q = search.toLowerCase();
-    const matchesSearch = !q || row.id.toLowerCase().includes(q) || row.tenant.includes(q) || row.equipment.includes(q);
-    const matchesStatus = !statusFilter || row.statusKey === statusFilter;
-    const matchesDate = !dateFilter || row.date === dateFilter;
+    const matchesSearch = !q || row?.id?.toLowerCase?.().includes(q) || row?.tenant?.includes(q) || row?.equipment?.includes(q);
+    const matchesStatus = !statusFilter || row?.statusKey === statusFilter;
+    const matchesDate = !dateFilter || row?.date === dateFilter;
     return matchesSearch && matchesStatus && matchesDate;
-  });
+  }) || [];
+
+
 
   const {
     currentPage,
@@ -74,18 +64,19 @@ export default function PaymentsTab() {
       </div>
       
       <Table
+        loading={loading}
         columns={columns}
         data={currentRows}
         renderRow={(row) => (
           <tr key={row.id} className="hover:bg-brand-content/50 transition-colors">
-                <td className="px-6 py-4 font-bold" dir="ltr">{row.id}</td>
-                <td className="px-6 py-4 font-medium">{row.tenant}</td>
-                <td className="px-6 py-4 text-brand-text-muted">{row.equipment}</td>
-                <td className="px-6 py-4 font-bold text-brand-primary">{row.rent.toLocaleString()} ر.ي</td>
-                <td className="px-6 py-4 font-medium">{row.insurance.toLocaleString()} ر.ي</td>
-                <td className="px-6 py-4 text-brand-text-muted" dir="ltr">{row.date}</td>
+                <td className="px-6 py-4 font-bold" dir="ltr">{row?.id}</td>
+                <td className="px-6 py-4 font-medium">{row?.tenant}</td>
+                <td className="px-6 py-4 text-brand-text-muted">{row?.equipment}</td>
+                <td className="px-6 py-4 font-bold text-brand-primary">{row?.rent?.toLocaleString?.() || '0'} ر.ي</td>
+                <td className="px-6 py-4 font-medium">{row?.insurance?.toLocaleString?.() || '0'} ر.ي</td>
+                <td className="px-6 py-4 text-brand-text-muted" dir="ltr">{row?.date}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(row.statusColor)}`}>{row.status}</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(row?.statusColor)}`}>{row?.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button 

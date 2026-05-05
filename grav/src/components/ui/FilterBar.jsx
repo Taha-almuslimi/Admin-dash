@@ -31,7 +31,7 @@ export default function FilterBar({
           className="w-full md:w-64"
         />
 
-        {filters.map((filter) => (
+        {filters?.map((filter) => (
           <Select
             key={filter.key}
             placeholder={filter.placeholder}

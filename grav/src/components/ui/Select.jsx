@@ -7,7 +7,7 @@ export default function Select({ options, value, onChange, placeholder, classNam
       {...props}
     >
       {placeholder && <option value="">{placeholder}</option>}
-      {options.map((option) => (
+      {options?.map((option) => (
         <option key={option.value} value={option.value}>{option.label}</option>
       ))}
     </select>

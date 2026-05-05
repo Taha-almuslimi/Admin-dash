@@ -8,28 +8,17 @@ import FilterBar from '../../../components/ui/FilterBar';
 import EmptyState from '../../../components/ui/EmptyState';
 import usePagination from '../../../hooks/usePagination';
 
-export default function RefundsTab() {
+export default function RefundsTab({ rows = [], loading = false }) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
-  const rows = [1, 2, 3, 4, 5, 6, 7];
-  const tenants = ['أحمد محمد', 'ياسر علي', 'خالد عبدالله', 'سالم سعيد', 'مؤسسة السلام', 'شركة البناء', 'علي صالح'];
-  const insurances = ['100,000', '50,000', '30,000', '150,000', '80,000', '120,000', '45,000'];
-  const refunds = ['100,000', '50,000', '25,000', '150,000', '80,000', '110,000', '45,000'];
-  const statuses = [
-    { key: 'refunded', label: 'تم الاسترداد', color: 'success' },
-    { key: 'processing', label: 'قيد المعالجة', color: 'warning' },
-    { key: 'partial', label: 'خصم جزئي', color: 'info' },
-  ];
-
-  const filteredRows = rows.filter((i) => {
-    const tenantName = tenants[i - 1];
-    const status = statuses[i % 3];
-    if (search && !tenantName.includes(search)) return false;
-    if (statusFilter && status.key !== statusFilter) return false;
-    return true;
-  });
+  const filteredRows = rows?.filter((row) => {
+    const q = search.toLowerCase();
+    const matchesSearch = !q || row?.tenant?.toLowerCase?.().includes(q);
+    const matchesStatus = !statusFilter || row?.statusKey === statusFilter;
+    return matchesSearch && matchesStatus;
+  }) || [];
 
   const {
     currentPage,
@@ -62,16 +51,17 @@ export default function RefundsTab() {
         <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
       ) : (
       <Table
+        loading={loading}
         columns={columns}
         data={currentRows}
-        renderRow={(i) => (
-          <tr key={i} className="hover:bg-brand-content/50 transition-colors">
-                <td className="px-6 py-4 font-bold text-brand-text-primary">{tenants[i - 1]}</td>
-                <td className="px-6 py-4 font-medium text-brand-text-muted">{insurances[i - 1]} ر.ي</td>
-                <td className="px-6 py-4 font-bold text-brand-success">{refunds[i - 1]} ر.ي</td>
-                <td className="px-6 py-4 text-brand-text-muted" dir="ltr">2024-05-{String(i + 10).padStart(2, '0')}</td>
+        renderRow={(row, i) => (
+          <tr key={row?.id || i} className="hover:bg-brand-content/50 transition-colors">
+                <td className="px-6 py-4 font-bold text-brand-text-primary">{row?.tenant}</td>
+                <td className="px-6 py-4 font-medium text-brand-text-muted">{row?.insurance} ر.ي</td>
+                <td className="px-6 py-4 font-bold text-brand-success">{row?.refund} ر.ي</td>
+                <td className="px-6 py-4 text-brand-text-muted" dir="ltr">{row?.date}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(statuses[i % 3].color)}`}>{statuses[i % 3].label}</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(row?.statusColor)}`}>{row?.status}</Badge>
                 </td>
               </tr>
         )}

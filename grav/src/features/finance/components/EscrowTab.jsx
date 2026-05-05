@@ -10,27 +10,18 @@ import FilterBar from '../../../components/ui/FilterBar';
 import EmptyState from '../../../components/ui/EmptyState';
 import usePagination from '../../../hooks/usePagination';
 
-export default function EscrowTab() {
+export default function EscrowTab({ rows = [], loading = false }) {
   const [selectedOp, setSelectedOp] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const itemsPerPage = 5;
 
-  const rows = useMemo(() => [1, 2, 3, 4, 5, 6, 7].map((i) => ({
-    id: `OP-2024-08${i}`,
-    amount: 150000 + i * 10000,
-    since: '12 مايو 2024',
-    status: i % 3 === 0 ? 'Completed' : 'In Use',
-    statusKey: i % 3 === 0 ? 'completed' : 'inuse',
-    statusColor: i % 3 === 0 ? 'success' : 'warning',
-  })), []);
-
-  const filteredRows = rows.filter((row) => {
+  const filteredRows = rows?.filter((row) => {
     const q = search.toLowerCase();
-    const matchesSearch = !q || row.id.toLowerCase().includes(q);
-    const matchesStatus = !statusFilter || row.statusKey === statusFilter;
+    const matchesSearch = !q || row?.id?.toLowerCase?.().includes(q);
+    const matchesStatus = !statusFilter || row?.statusKey === statusFilter;
     return matchesSearch && matchesStatus;
-  });
+  }) || [];
 
   const {
     currentPage,
@@ -73,15 +64,16 @@ export default function EscrowTab() {
         <EmptyState icon={Search} title="لا توجد نتائج" description="حاول تغيير معايير البحث" />
       ) : (
       <Table
+        loading={loading}
         columns={columns}
         data={currentRows}
         renderRow={(row) => (
           <tr key={row.id} className="hover:bg-brand-content/50 transition-colors">
-                <td className="px-6 py-4 font-bold" dir="ltr">{row.id}</td>
-                <td className="px-6 py-4 font-bold text-brand-warning">{row.amount.toLocaleString()} ر.ي</td>
-                <td className="px-6 py-4 text-brand-text-muted">{row.since}</td>
+                <td className="px-6 py-4 font-bold" dir="ltr">{row?.id}</td>
+                <td className="px-6 py-4 font-bold text-brand-warning">{row?.amount?.toLocaleString?.() || '0'} ر.ي</td>
+                <td className="px-6 py-4 text-brand-text-muted">{row?.since}</td>
                 <td className="px-6 py-4 text-center">
-                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(row.statusColor)}`}>{row.status}</Badge>
+                  <Badge unstyled className={`px-2.5 py-1 rounded-md text-xs font-bold ${badgeClass(row?.statusColor)}`}>{row?.status}</Badge>
                 </td>
                 <td className="px-6 py-4 text-center">
                   <Button 

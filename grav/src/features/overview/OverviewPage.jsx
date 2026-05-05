@@ -12,8 +12,8 @@ export default function OverviewPage() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <KpiRow1 />
-      <KpiRow2 lineData={lineData} />
+      <KpiRow1 stats={{ rentals: '1,240', profits: '4.2M', disputes: '18', users: '3,580' }} loading={false} />
+      <KpiRow2 lineData={lineData} rates={{ cancel: '8.4%', dispute: '3.2%', escrow: '2,450,000' }} loading={false} />
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         <LineChart chartFilter={chartFilter} setChartFilter={setChartFilter} lineData={lineData} />

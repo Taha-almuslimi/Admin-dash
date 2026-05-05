@@ -8,7 +8,7 @@ export default function Tabs({
 }) {
   return (
     <div className={className}>
-      {tabs.map(tab => (
+      {tabs?.map(tab => (
         <button
           key={tab.id}
           onClick={() => onChange(tab.id)}
